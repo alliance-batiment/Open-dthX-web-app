@@ -18,8 +18,9 @@ import {
   ListItemText
 } from '@material-ui/core';
 import Icon from './Icon.svg';
-import Logo from './Logo.png';
+import Logo from './logo_Open_dthX.png';
 import SectionAnalysis from './Views/SectionAnalysis/SectionAnalysis';
+import DatBimApi from './Views/DatBimApi/DatBimApi';
 
 const Menu = {
   MenuNavBar: [
@@ -61,7 +62,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Helmet>
-        <title>{`TriDyme | Applications`}</title>
+        <title>{`Open dthX | API connexion`}</title>
         <link rel="icon" type="image/png" href={Logo} sizes="16x16" />
       </Helmet>
       <Router history={history}>
@@ -69,16 +70,16 @@ const App = () => {
           title={<ListItem>
             <ListItemAvatar>
               <Avatar
-                alt={`Section Geometry`}
-                src={Icon}
+                alt={`Open-dthX`}
+                src={Logo}
               />
             </ListItemAvatar>
-            <ListItemText primary={`Section Geometry`} />
+            <ListItemText primary={`Open-dthX`} />
           </ListItem>}
           menu={Menu}
         >
           <Switch>
-            <Route exact path="/my-app-name" component={SectionAnalysis} />
+            <Route exact path="/my-app-name" component={DatBimApi} />
             <Redirect from="/" to="/my-app-name" />
           </Switch>
         </AppContainerElem>

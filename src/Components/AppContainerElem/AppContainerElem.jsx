@@ -100,12 +100,12 @@ export default function PersistentDrawerLeft({
   return (
     <div className={classes.root}>
       <CssBaseline />
-			<NavBarElem 
+			{/* <NavBarElem 
 				title={title}
 				classes={classes}
 				handleDrawerOpen={handleDrawerOpen}
 				open={open}
-			/>
+			/> */}
       <Drawer
         className={classes.drawer}
         variant="persistent"
