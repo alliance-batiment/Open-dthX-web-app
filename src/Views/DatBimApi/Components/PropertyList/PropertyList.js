@@ -171,7 +171,17 @@ const PropertyList = ({
         updatedProperties.push(updatePorperty(property));
       }
 
-      console.log('updatedProperties', updatedProperties)
+      const fileName = `object_${objSelected}_properties`;
+      const json = JSON.stringify(updatedProperties);
+      const blob = new Blob([json], { type: 'application/json' });
+      const href = await URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = href;
+      link.download = fileName + ".json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
       const objectGeometry = await axios({
         method: "post",
         url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/glb`,
