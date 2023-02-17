@@ -25,7 +25,7 @@ import Add from "@material-ui/icons/Add";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import SearchBar from "../../../../Components/SearchBar";
+import SearchBar from "../../../../../../Components/SearchBar";
 import DefineTypeComponent from "./DefineTypeComponent";
 import InfoIcon from "@material-ui/icons/Info";
 
@@ -81,10 +81,11 @@ const PropertyList = ({
   setEids,
   addElementsNewProperties,
   handleShowMarketplace,
+  properties,
+  setProperties
 }) => {
   const [searchInput, setSearchInput] = useState("");
   const [propertyListDefault, setPropertyListDefault] = useState([]);
-  const [properties, setProperties] = useState([]);
   const [allChecked, setAllChecked] = useState(true);
   const [status, setStatus] = useState("");
   const history = useHistory();
@@ -171,16 +172,16 @@ const PropertyList = ({
         updatedProperties.push(updatePorperty(property));
       }
 
-      const fileName = `object_${objSelected}_properties`;
-      const json = JSON.stringify(updatedProperties);
-      const blob = new Blob([json], { type: 'application/json' });
-      const href = await URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = href;
-      link.download = fileName + ".json";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // const fileName = `object_${objSelected}_properties`;
+      // const json = JSON.stringify(updatedProperties);
+      // const blob = new Blob([json], { type: 'application/json' });
+      // const href = await URL.createObjectURL(blob);
+      // const link = document.createElement('a');
+      // link.href = href;
+      // link.download = fileName + ".json";
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
 
       const objectGeometry = await axios({
         method: "post",
@@ -327,7 +328,7 @@ const PropertyList = ({
 
 
 
-  const addElementsDatBimProperties = async (properties, objSelected) => {
+  const addElementsDatBimProperties = async (properties) => {
     const filteredProperties = properties.filter(
       (property) => property.checked
     );
@@ -359,6 +360,24 @@ const PropertyList = ({
     });
     handleShowMarketplace("home");
   };
+
+  const handleSpeckleConnector = async (properties) => {
+    // if(commitUrl !== "") {
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:5000/speckle/sendData",
+        headers: {
+          "content-type": "application/json"
+        },
+        data: {
+          commitUrl: "https://speckle.xyz/streams/5e27173ad3/commits/89c2f52064",
+          properties: properties
+        },
+      });
+
+      console.log('Speckle ', res.data);
+    // }
+  }
 
   console.log("properties", properties);
   return (
@@ -434,7 +453,7 @@ const PropertyList = ({
           ))}
         </TableBody>
       </Table>
-      <Grid row align="left">
+      {/* <Grid row align="left">
         <Button
           variant="contained"
           onClick={() => {
@@ -445,19 +464,21 @@ const PropertyList = ({
         >
           Géométrie
         </Button>
-      </Grid>
-      <Grid row align="right">
+      </Grid> */}
+      {/* <Grid row align="right">
         <Button
           variant="contained"
           onClick={() => {
-            addElementsDatBimProperties(properties, objSelected);
+            if(eids && eids.length > 0) {
+               addElementsDatBimProperties(properties, objSelected);
+            }
           }}
           color="primary"
           className={classes.button}
         >
           Ajouter
         </Button>
-      </Grid>
+      </Grid> */}
       {(status !== "") &&
         <Grid item xs={12}>
           <Alert severity={'error'}>{`${status}`}</Alert>

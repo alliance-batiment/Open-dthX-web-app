@@ -8,7 +8,6 @@ import {
   Breadcrumbs,
   Divider,
 } from "@material-ui/core";
-import PropertyList from "../PropertyList/PropertyList";
 import SelectionComponent from "./SelectionComponent";
 
 import TreeView from "@material-ui/lab/TreeView";
@@ -17,6 +16,9 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SearchBar from "../../../../Components/SearchBar";
+
+import PropertyList from "./Components/PropertyList/PropertyList";
+import SpeckleConnector from "./Components/SpeckleConnector";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -65,6 +67,7 @@ const ObjectList = ({
   const [objectsLoader, setObjectsLoader] = useState(false);
   const [objectListing, setObjectListing] = useState({});
   const [selectedObjectName, setSelectedObjectName] = useState("");
+  const [properties, setProperties] = useState([]);
 
   // const classes = await axios.get(
   //   `${process.env.REACT_APP_API_DATBIM}/classes/mapping/${typeProperties}`,
@@ -400,8 +403,14 @@ const ObjectList = ({
             setEids={setEids}
             addElementsNewProperties={addElementsNewProperties}
             handleShowMarketplace={handleShowMarketplace}
+            properties={properties}
+            setProperties = {setProperties}
           />
         </Grid>
+        <SpeckleConnector
+            properties={properties}
+            setProperties = {setProperties}
+      />
       </Grid>
     </>
   );
