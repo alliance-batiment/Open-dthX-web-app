@@ -259,7 +259,9 @@ const SpeckleConnector = ({
           </Grid>
           {(host !== "" && stream !== "" && commit !== "") &&
           // <iframe src={`${host}/${stream}/${commit}}`} width="600" height="400" frameborder="0"></iframe>
-          <iframe src={`${host}/embed?stream=${stream}&commit=${commit}&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true`} width="600" height="400" frameborder="0"></iframe>
+          <Grid item xs={12} style={{textAlign: "center"}}>
+            <iframe src={`${host}/embed?stream=${stream}&commit=${commit}&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true`} width="600" height="400" frameborder="0"></iframe>
+          </Grid>
           // <div id="viewer-container" style={{width: 400, height: 400}}></div>
           }
           {/* <div id="viewer-container" style={{width: 400, height: 400}}></div> */}

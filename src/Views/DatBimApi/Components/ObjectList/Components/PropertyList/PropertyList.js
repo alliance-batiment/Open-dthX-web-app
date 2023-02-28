@@ -340,44 +340,27 @@ const PropertyList = ({
 
     console.log('updateProperties', updateProperties)
 
-    // const signingProperties = await axios({
-    //   method: "post",
-    //   url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
-    //   headers: {
-    //     "content-type": "application/json",
-    //     "X-Auth-Token": sessionStorage.getItem("token"),
-    //   },
-    //   data: updateProperties,
-    // });
-
-    // console.log('data from datbim', signingProperties)
-
-    addElementsNewProperties({
-      viewer,
-      modelID,
-      expressIDs: eids,
-      properties: updateProperties,
+    const signingProperties = await axios({
+      method: "post",
+      url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
+      headers: {
+        "content-type": "application/json",
+        "X-Auth-Token": sessionStorage.getItem("token"),
+      },
+      data: updateProperties,
     });
-    handleShowMarketplace("home");
+
+    console.log('data from datbim', signingProperties)
+
+    // addElementsNewProperties({
+    //   viewer,
+    //   modelID,
+    //   expressIDs: eids,
+    //   properties: updateProperties,
+    // });
+    // handleShowMarketplace("home");
   };
 
-  const handleSpeckleConnector = async (properties) => {
-    // if(commitUrl !== "") {
-      const res = await axios({
-        method: "post",
-        url: "http://localhost:5000/speckle/sendData",
-        headers: {
-          "content-type": "application/json"
-        },
-        data: {
-          commitUrl: "https://speckle.xyz/streams/5e27173ad3/commits/89c2f52064",
-          properties: properties
-        },
-      });
-
-      console.log('Speckle ', res.data);
-    // }
-  }
 
   console.log("properties", properties);
   return (
@@ -453,7 +436,7 @@ const PropertyList = ({
           ))}
         </TableBody>
       </Table>
-      {/* <Grid row align="left">
+      <Grid row align="left">
         <Button
           variant="contained"
           onClick={() => {
@@ -464,21 +447,22 @@ const PropertyList = ({
         >
           Géométrie
         </Button>
-      </Grid> */}
-      {/* <Grid row align="right">
+      </Grid>
+      <Grid row align="right">
         <Button
           variant="contained"
           onClick={() => {
-            if(eids && eids.length > 0) {
-               addElementsDatBimProperties(properties, objSelected);
-            }
+            // if(eids && eids.length > 0) {
+            //    addElementsDatBimProperties(properties, objSelected);
+            // }
+            addElementsDatBimProperties(properties);
           }}
           color="primary"
           className={classes.button}
         >
           Ajouter
         </Button>
-      </Grid> */}
+      </Grid>
       {(status !== "") &&
         <Grid item xs={12}>
           <Alert severity={'error'}>{`${status}`}</Alert>
