@@ -192,7 +192,23 @@ const PropertyList = ({
         },
         data: updatedProperties,
       });
-      console.log("objectGeometry", objectGeometry)
+
+      // const objectGeometry = await axios({
+      //   method: "post",
+      //   url: "http://localhost:5000/opendthx/postGeometry",
+      //   headers: {
+      //     "content-type": "application/json",
+      //     "X-Auth-Token": sessionStorage.getItem("token"),
+      //   },
+      //   data: {
+      //     url:  `${process.env.REACT_APP_API_DATBIM}`,
+      //     token: sessionStorage.getItem("token"),
+      //     objectId: selectedObject,
+      //     properties: updatedProperties
+      //   },
+      // });
+
+      console.log("objectGeometry", objectGeometry);
 
     } catch (err) {
       getError(err);
@@ -360,6 +376,8 @@ const PropertyList = ({
     // });
     // handleShowMarketplace("home");
   };
+
+
 
 
   console.log("properties", properties);

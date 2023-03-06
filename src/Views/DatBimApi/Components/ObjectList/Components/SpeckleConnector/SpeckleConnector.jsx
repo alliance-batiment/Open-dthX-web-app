@@ -29,6 +29,7 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import { Viewer, DefaultViewerParams, ViewerEvent } from '@speckle/viewer';
+import { useMutation, gql } from '@apollo/client';
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -103,8 +104,29 @@ const SpeckleConnector = ({
     setOutputCommitUrl("");
   }
 
-  const handleUpdateElements = async () => {
+  // const CREATE_LINK_MUTATION = gql`
+  //   mutation PostMutation(
+  //     $description: String!
+  //     $url: String!
+  //   ) {
+  //     post(description: $description, url: $url) {
+  //       id
+  //       createdAt
+  //       url
+  //       description
+  //     }
+  //   }
+  // `;
 
+  // const [createLink] = useMutation(CREATE_LINK_MUTATION, {
+  //   variables: {
+  //     description: formState.description,
+  //     url: formState.url
+  //   }
+  // });
+
+  const handleUpdateElements = async () => {
+    // createLink();
   }
 
   const handleGetCommit = async () => {
@@ -266,13 +288,13 @@ const SpeckleConnector = ({
           }
           {/* <div id="viewer-container" style={{width: 400, height: 400}}></div> */}
         {/* <div className="np-w-full np-h-full np-pointer-events-auto np-bg-pale" ref={containerRef} /> */}
-          {/* <Button
+          <Button
           variant="contained"
             onClick={handleUpdateElements}
             color="primary"
           >
             Enrichissement
-          </Button> */}
+          </Button>
         </>
       }
     {/* <iframe src="https://speckle.xyz/embed?stream=5e27173ad3&object=35fd8ddce68a4cae3327b9e43584b609&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true" width="600" height="400" frameborder="0"></iframe> */}
