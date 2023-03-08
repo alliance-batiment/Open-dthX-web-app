@@ -3,6 +3,7 @@
 ## Sommaire
 
 - [Mise en route](#installations)
+- [Webpack Federation](#federation)
 - [Documentation API](#api)
 - [Communauté & Assistance](#assistance)
 - [License](#license)
@@ -19,7 +20,7 @@ $ git clone https://github.com/alliance-batiment/Open-dthX-web-app.git
 
 ### Démarrage
 
-
+Cette application utilise la version `16.14.0` de **Node.js**.
 Puis, entrez dans votre dossier, lancez l'installation des modules **Node.js** via la commande `npm install` et enfin démarrez l'application avec `npm start`:
 
 ```shell
@@ -29,7 +30,19 @@ $ npm start
 ```
 Notez que notre application a dû s'ouvrir automatiquement dans notre navigateur (si ce n'est pas le cas, ouvrez un nouvel onglet dans votre navigateur et saisissez l'URL indiquée par la commande dans le terminal, normalement  http://localhost:3000/ ).
 
-Cette application permet de charger et de visualiser une maquette IFC.
+
+## <a name="federation"></a>Webpack federation
+
+Une fois dans **Open-dthX-web-app**, afin de faire fonctionner l'application avec Webpack Federation:
+```shell
+$ cd ./module-federation
+$ npm install
+```
+Puis revenez à la racine du projet:
+```shell
+$ cd ./module-federation
+$ npm run start:federation
+```
 
 ## <a name="api"></a>Documentation API
 
