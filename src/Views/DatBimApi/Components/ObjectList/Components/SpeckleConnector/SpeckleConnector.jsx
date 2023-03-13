@@ -32,6 +32,20 @@ import { Viewer, DefaultViewerParams, ViewerEvent } from '@speckle/viewer';
 import { useMutation, gql } from '@apollo/client';
 import axios from "axios";
 
+import GlbFile from "./Flamingo.glb";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
+import { 
+  Mesh,
+  BufferGeometry,
+  BoxGeometry, 
+  MeshBasicMaterial, 
+  PerspectiveCamera, 
+  WebGLRenderer,
+  Scene,
+} from 'three';
+import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+
 const useStyles = makeStyles((theme) => ({
   search: {
     height: "3em",
@@ -66,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const SpeckleConnector = ({
+  selectedObject,
   properties,
   setProperties
 }) => {
@@ -80,17 +95,100 @@ const SpeckleConnector = ({
   const containerRef = useRef(HTMLDivElement);
   const viewerRef = useRef(Viewer);
 
+
+  function createMesh(insertedMeshes) {
+
+  }
+
+
+
   useEffect(() => {
     const init = async () => {
-      setLoading(false)
+      
+      // //1 The scene
+      // const scene = new Scene()
+
+      // //2 The Object
+      // const geometry = new BoxGeometry(0.5, 0.5, 0.5);
+      // const material = new MeshBasicMaterial( {color: 'orange'} );
+      // const cubeMesh = new Mesh( geometry, material );
+      // scene.add( cubeMesh );
+
+      // //3 The Camera
+      // const sizes = {
+      //     width: 800,
+      //     height: 600,
+      // }
+
+      // const camera = new PerspectiveCamera(75, sizes.width/ sizes.height);
+      // camera.position.z = 3; // Z let's you move backwards and forwards. X is sideways, Y is upward and do
+      // scene.add( camera );
+
+      // //4 The Renderer
+      // const threeCanvas= document.getElementById('three-canvas')
+      // const renderer = new WebGLRenderer({
+      //     canvas: threeCanvas,
+      // });
+
+      // renderer.setSize(sizes.width, sizes.height);
+
+      // const loader = new GLTFLoader();
+      // const loadedData = await loader.loadAsync(GlbFile);
+
+
+      // console.log('loadedData', loadedData)
+      // console.log('loadedData', loadedData.scene.children[0])
+      // const object = loadedData.scene.children[0];
+      // scene.add(loadedData.scene.children[0])
+
+      // let geoms = [];
+      // let meshes = [];
+      // object.traverse( function( o ) {
+      //   if ( o.isMesh ) {
+      //     console.log( o.geometry )
+      //     meshes.push(o);
+      //     geoms.push(o.geometry);
+      //   };
+      // });
+      // console.log('MESHES',meshes)
+      // //clone.updateMatrixWorld(true,true)
+      // //clone.traverse(e=>e.isMesh && meshes.push(e) && (geoms.push(( e.geometry.index ) ? e.geometry.toNonIndexed() : e.geometry().clone())))
+      // geoms.forEach((g,i)=>g.applyMatrix4(meshes[i].matrixWorld));
+      
+      // let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
+      // // gg.applyMatrix4(clone.matrix.clone().invert());
+      // // gg.userData.materials = meshes.map(m=>m.material)
+
+      // // console.log('gg', gg);
+
       // const container = document.getElementById('viewer-container');
+      // console.log('VERTICES', Array.from(gg.attributes.position.array))
+      // const res = await axios({
+      //   method: "post",
+      //   url: "http://localhost:5000/speckle/postData",
+      //   headers: {
+      //     "content-type": "application/json"
+      //   },
+      //   data: {
+      //     vertices: Array.from(gg.attributes.position.array),
+      //     faces: Array.from(gg.index.array),
+      //     colors: Array.from(gg.attributes.color.array),
+      //     // colors: colors
+      //   }
+      // })
+
+      // console.log('SPECKLE', res.data)
+
       // const newViewer = new Viewer(container, {
       //    showStats: false,
       //    environmentSrc: '',
       //  });
       //  await newViewer.init();
-       //await viewer.loadObject(`${hostUrl}/${streamId}/${commitId}`, '6360a3aac1a47d32ddadf4efbe529e3a6fb2669088')
-       //await newViewer.loadObject("https://speckle.xyz/streams/1af93c4201/objects/1e40e9e0b9d011446d02de03e231092d", '7a12985629a662ea4f063920b1b944cc0b80f358ce');
+      //  newViewer.on(ViewerEvent.LoadProgress, (arg) => {
+      //   console.log(arg)
+      // })
+      //  //await newViewer.loadObject(`${hostUrl}/${streamId}/${commitId}`, '6360a3aac1a47d32ddadf4efbe529e3a6fb2669088')
+      //  await newViewer.loadObject("https://speckle.xyz/streams/1af93c4201/objects/1e40e9e0b9d011446d02de03e231092d", '7a12985629a662ea4f063920b1b944cc0b80f358ce');
       //  console.log('newViewer', newViewer)
       //  setViewer(newViewer);
       setLoading(false)
@@ -199,6 +297,150 @@ const SpeckleConnector = ({
     }
   };
 
+  const updatePorperty = (property) => {
+    switch (property.data_type_name) {
+      case "Intervalle":
+        return {
+          ...property,
+          text_value: property.num_value,
+          value: property.num_value
+        }
+      case "Grid/Tableau":
+        const { values } = JSON.parse(property.text_value)
+        const newValues = [];
+        for (let value of values) {
+          newValues.push(`${value[0].data}: ${value[1].data}`)
+        }
+        return {
+          ...property,
+          text_value: newValues.toString(),
+          value: newValues.toString(),
+        }
+      default:
+        return {
+          ...property,
+          value: property.text_value
+        };
+    }
+  }
+
+  const postGeometry = async (properties, objSelected) => {
+    try {
+      console.log('properties', properties);
+      console.log('objSelected', objSelected);
+
+      const updatedProperties = [];
+
+      for(let property of properties) {
+        updatedProperties.push(updatePorperty(property));
+      }
+
+      const objectGeometry = await axios({
+        method: "post",
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/glb`,
+        headers: {
+          "content-type": "application/json",
+          "X-Auth-Token": sessionStorage.getItem("token"),
+        },
+        data: updatedProperties,
+      });
+      console.log("objectGeometry", objectGeometry);
+      console.log("type ", typeof objectGeometry.data);
+      console.log("instance ", objectGeometry.data instanceof ArrayBuffer);
+
+
+      // const exporter = new GLTFExporter();
+      // exporter.parse(objectGeometry.data, (result) => {
+      //   console.log(typeof result);
+      //   if (result instanceof ArrayBuffer) {
+      //     saveArrayBuffer(result, 'newmodel.glb');
+      //   } else {
+      //     const output = JSON.stringify(result, null, 2);
+      //     saveString(output, 'newmodel.gltf');
+      //   }
+      // })
+
+      saveString(objectGeometry.data, 'newmodel.gltf');
+      // console.log("objectGeometry", objectGeometry);
+
+      // const fileName = `object_${objSelected}_geometry`;
+      // const buffer = objectGeometry.data;
+      // const blob = new Blob([buffer], { type: 'application/octet-stream' });
+      // const href = await URL.createObjectURL(blob);
+      // const link = document.createElement('a');
+      // link.href = href;
+      // link.download = fileName + ".glb";
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+
+    } catch (err) {
+      console.log('error ', err);
+    }
+  };
+
+  const saveString = (text, filename) => {
+    save(new Blob([text], { type: 'text/plain' }), filename);
+  };
+
+  const saveArrayBuffer = (buffer, filename) => {
+      save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
+  };
+
+  const save = (blob, filename) => {
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link); // Firefox workaround, see #6594
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  };
+
+  const getMeshFromFile = async () => {
+      const loader = new GLTFLoader();
+      const loadedData = await loader.loadAsync(GlbFile);
+
+
+      // console.log('loadedData', loadedData)
+      // console.log('loadedData', loadedData.scene.children[0])
+      const object = loadedData.scene.children[0];
+      // scene.add(loadedData.scene.children[0])
+
+      let geoms = [];
+      let meshes = [];
+      object.traverse( function( o ) {
+        if ( o.isMesh ) {
+          console.log( o.geometry )
+          meshes.push(o);
+          geoms.push(o.geometry);
+        };
+      });
+      console.log('MESHES',meshes)
+      //clone.updateMatrixWorld(true,true)
+      //clone.traverse(e=>e.isMesh && meshes.push(e) && (geoms.push(( e.geometry.index ) ? e.geometry.toNonIndexed() : e.geometry().clone())))
+      geoms.forEach((g,i)=>g.applyMatrix4(meshes[i].matrixWorld));
+      
+      let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
+      // gg.applyMatrix4(clone.matrix.clone().invert());
+      // gg.userData.materials = meshes.map(m=>m.material)
+
+      // console.log('gg', gg);
+
+      console.log('VERTICES', Array.from(gg.attributes.position.array))
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:5000/speckle/postData",
+        headers: {
+          "content-type": "application/json"
+        },
+        data: {
+          vertices: Array.from(gg.attributes.position.array),
+          faces: Array.from(gg.index.array),
+          colors: Array.from(gg.attributes.color.array),
+          // colors: colors
+        }
+      })
+  }
 
   return (
     <>
@@ -208,6 +450,18 @@ const SpeckleConnector = ({
         </Grid>
         :
         <>
+          <Grid row align="left">
+            <Button
+              variant="contained"
+              onClick={() => {
+                postGeometry(properties, selectedObject);
+              }}
+              color="primary"
+              className={classes.button}
+            >
+              Géométrie
+            </Button>
+          </Grid>
           <Grid item xs={12}>
             <Typography variant="subtitle1" component="h3">
             Open dthX - Speckle: URL du Commit pour l'enrichissement
@@ -286,7 +540,6 @@ const SpeckleConnector = ({
           </Grid>
           // <div id="viewer-container" style={{width: 400, height: 400}}></div>
           }
-          {/* <div id="viewer-container" style={{width: 400, height: 400}}></div> */}
         {/* <div className="np-w-full np-h-full np-pointer-events-auto np-bg-pale" ref={containerRef} /> */}
           <Button
           variant="contained"
@@ -297,6 +550,8 @@ const SpeckleConnector = ({
           </Button>
         </>
       }
+      <canvas id="three-canvas" style={{width: 400, height: 400, backgroundColor: 'red'}}></canvas>
+      <div id="viewer-container" style={{width: 400, height: 400, backgroundColor: 'red'}}></div>
     {/* <iframe src="https://speckle.xyz/embed?stream=5e27173ad3&object=35fd8ddce68a4cae3327b9e43584b609&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true" width="600" height="400" frameborder="0"></iframe> */}
     </>
   );

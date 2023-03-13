@@ -208,7 +208,7 @@ const PropertyList = ({
       //   },
       // });
 
-      console.log("objectGeometry", objectGeometry);
+      console.log("objectGeometry", objectGeometry.data);
 
     } catch (err) {
       getError(err);

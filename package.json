@@ -39,7 +39,7 @@
     "react-webcam": "^5.0.1",
     "reactstrap": "^7.1.0",
     "styled-components": "^5.0.1",
-    "three": "^0.130.0",
+    "three": "^0.130.1",
     "three-css2drender": "^1.0.0",
     "use-tensorflow": "^0.3.2",
     "web-ifc-three": "0.0.31",
