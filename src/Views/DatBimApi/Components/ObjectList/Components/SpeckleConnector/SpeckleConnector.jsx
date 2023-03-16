@@ -337,10 +337,11 @@ const SpeckleConnector = ({
 
       const objectGeometry = await axios({
         method: "post",
-        url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/glb`,
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/ifc`,
         headers: {
           "content-type": "application/json",
           "X-Auth-Token": sessionStorage.getItem("token"),
+          "Accept": "application/octet-stream",
         },
         data: updatedProperties,
       });
@@ -349,30 +350,10 @@ const SpeckleConnector = ({
       console.log("instance ", objectGeometry.data instanceof ArrayBuffer);
 
 
-      // const exporter = new GLTFExporter();
-      // exporter.parse(objectGeometry.data, (result) => {
-      //   console.log(typeof result);
-      //   if (result instanceof ArrayBuffer) {
-      //     saveArrayBuffer(result, 'newmodel.glb');
-      //   } else {
-      //     const output = JSON.stringify(result, null, 2);
-      //     saveString(output, 'newmodel.gltf');
-      //   }
-      // })
-
-      saveString(objectGeometry.data, 'newmodel.gltf');
+      saveArrayBuffer(objectGeometry.data, 'newmodel.ifc');
       // console.log("objectGeometry", objectGeometry);
 
-      // const fileName = `object_${objSelected}_geometry`;
-      // const buffer = objectGeometry.data;
-      // const blob = new Blob([buffer], { type: 'application/octet-stream' });
-      // const href = await URL.createObjectURL(blob);
-      // const link = document.createElement('a');
-      // link.href = href;
-      // link.download = fileName + ".glb";
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
+
 
     } catch (err) {
       console.log('error ', err);
