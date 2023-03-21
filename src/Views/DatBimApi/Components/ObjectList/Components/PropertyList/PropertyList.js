@@ -28,6 +28,7 @@ import moment from "moment";
 import SearchBar from "../../../../../../Components/SearchBar";
 import DefineTypeComponent from "./DefineTypeComponent";
 import InfoIcon from "@material-ui/icons/Info";
+import SpeckleConnector from "../SpeckleConnector";
 
 const useStyles = makeStyles((theme) => ({
   searchBar: {
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: "10px",
     backgroundColor: "#E6464D",
+    margin: "1em",
     color: "white",
     "&:hover": {
       backgroundColor: "#E6464D",
@@ -161,81 +163,6 @@ const PropertyList = ({
     }
   };
 
-  const postGeometry = async (properties, objSelected) => {
-    try {
-      console.log('properties', properties);
-      console.log('objSelected', objSelected);
-
-      const updatedProperties = [];
-
-      for(let property of properties) {
-        updatedProperties.push(updatePorperty(property));
-      }
-
-      // const fileName = `object_${objSelected}_properties`;
-      // const json = JSON.stringify(updatedProperties);
-      // const blob = new Blob([json], { type: 'application/json' });
-      // const href = await URL.createObjectURL(blob);
-      // const link = document.createElement('a');
-      // link.href = href;
-      // link.download = fileName + ".json";
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
-
-      const objectGeometry = await axios({
-        method: "post",
-        url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/glb`,
-        headers: {
-          "content-type": "application/json",
-          "X-Auth-Token": sessionStorage.getItem("token"),
-        },
-        data: updatedProperties,
-      });
-
-      // const objectGeometry = await axios({
-      //   method: "post",
-      //   url: "http://localhost:5000/opendthx/postGeometry",
-      //   headers: {
-      //     "content-type": "application/json",
-      //     "X-Auth-Token": sessionStorage.getItem("token"),
-      //   },
-      //   data: {
-      //     url:  `${process.env.REACT_APP_API_DATBIM}`,
-      //     token: sessionStorage.getItem("token"),
-      //     objectId: selectedObject,
-      //     properties: updatedProperties
-      //   },
-      // });
-
-      console.log("objectGeometry", objectGeometry.data);
-
-    } catch (err) {
-      getError(err);
-    }
-  };
-
-
-  const getError = (err) => {
-    if (err.response?.status === 400) {
-      setStatus("the data sent is not correct")
-    }
-    if (err.response?.status === 401) {
-      setStatus("unauthorized, the token must be in the header")
-    }
-    if (err.response?.status === 403) {
-      setStatus("access denied")
-    }
-    if (err.response?.status === 404) {
-      setStatus("the object id doesn't exist")
-    }
-    if (err.response?.status === 410) {
-      setStatus("resource unavailable")
-    }
-  }
-
-
-
   const handleCheckedProperties = (e) => {
     // console.log(`Checkbox id:`, e.target.id);
     // console.log(`Checkbox check:`, e.target.checked);
@@ -314,7 +241,6 @@ const PropertyList = ({
     setProperties(newPropertiesArr);
   };
 
-
   const updatePorperty = (property) => {
     switch (property.data_type_name) {
       case "Intervalle":
@@ -341,8 +267,6 @@ const PropertyList = ({
         };
     }
   }
-
-
 
   const addElementsDatBimProperties = async (properties) => {
     const filteredProperties = properties.filter(
@@ -377,10 +301,6 @@ const PropertyList = ({
     // handleShowMarketplace("home");
   };
 
-
-
-
-  console.log("properties", properties);
   return (
     <TableContainer component={Paper}>
       {/* <SearchBar
@@ -410,6 +330,7 @@ const PropertyList = ({
             )}
           </TableRow>
         </TableHead>
+        {(selectedObject && selectedObject !== "") && 
         <TableBody>
           {properties?.map((property, propertyIndex) => (
             <TableRow
@@ -453,33 +374,33 @@ const PropertyList = ({
             </TableRow>
           ))}
         </TableBody>
+        }
       </Table>
-      <Grid row align="left">
-        <Button
-          variant="contained"
-          onClick={() => {
-            postGeometry(properties, selectedObject);
-          }}
-          color="primary"
-          className={classes.button}
-        >
-          Géométrie
-        </Button>
-      </Grid>
-      <Grid row align="right">
-        <Button
-          variant="contained"
-          onClick={() => {
-            // if(eids && eids.length > 0) {
-            //    addElementsDatBimProperties(properties, objSelected);
-            // }
-            addElementsDatBimProperties(properties);
-          }}
-          color="primary"
-          className={classes.button}
-        >
-          Ajouter
-        </Button>
+      <Grid container>
+        <Grid item xs={6} align="left">
+          <SpeckleConnector
+            selectedObject={selectedObject}
+            properties={properties}
+            setProperties = {setProperties}
+          />
+        </Grid>
+        <Grid item xs={6} align="right">
+          {(selectedObject && selectedObject !== "") && 
+            <Button
+              variant="contained"
+              onClick={() => {
+                // if(eids && eids.length > 0) {
+                //    addElementsDatBimProperties(properties, objSelected);
+                // }
+                addElementsDatBimProperties(properties);
+              }}
+              color="primary"
+              className={classes.button}
+            >
+              Ajouter
+            </Button>
+          }
+        </Grid>
       </Grid>
       {(status !== "") &&
         <Grid item xs={12}>

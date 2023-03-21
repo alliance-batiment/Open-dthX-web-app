@@ -326,7 +326,7 @@ const DatBimApi = ({
 
   return (
     <div
-      style={{ backgroundColor: 'white'}}
+      //style={{ backgroundColor: 'white'}}
     >
       <Grid container>
         <Grid item xs={6} style={{ textAlign: "left" }}>
@@ -349,6 +349,7 @@ const DatBimApi = ({
       </Grid>
       <Stepper
         alternativeLabel
+        style={{backgroundColor: "transparent"}}
         activeStep={activeStep}
         connector={<QontoConnector />}
       >

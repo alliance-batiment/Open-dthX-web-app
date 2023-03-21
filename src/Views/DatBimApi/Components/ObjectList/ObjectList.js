@@ -407,11 +407,11 @@ const ObjectList = ({
             setProperties = {setProperties}
           />
         </Grid>
-        <SpeckleConnector
+        {/* <SpeckleConnector
             selectedObject={selectedObject}
             properties={properties}
             setProperties = {setProperties}
-      />
+      /> */}
       </Grid>
     </>
   );

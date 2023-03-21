@@ -33,6 +33,7 @@ import { useMutation, gql } from '@apollo/client';
 import axios from "axios";
 
 import GlbFile from "./Flamingo.glb";
+import IfcFile from "./newmodel.ifc";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { 
@@ -44,7 +45,10 @@ import {
   WebGLRenderer,
   Scene,
 } from 'three';
-import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// import { BufferGeometryUtils } from 'three/addons/utils/BufferGeometryUtils.js';
+import { IFCLoader } from "web-ifc-three/IFCLoader";
+import SpeckleIcon from "./Img/SpeckleIcon.png"
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -92,106 +96,13 @@ const SpeckleConnector = ({
   const [host, setHost] = useState("");
   const [stream, setStream] = useState("");
   const [commit, setCommit] = useState("");
+  const [status, setStatus] = useState("");
   const containerRef = useRef(HTMLDivElement);
   const viewerRef = useRef(Viewer);
 
-
-  function createMesh(insertedMeshes) {
-
-  }
-
-
-
   useEffect(() => {
     const init = async () => {
-      
-      // //1 The scene
-      // const scene = new Scene()
-
-      // //2 The Object
-      // const geometry = new BoxGeometry(0.5, 0.5, 0.5);
-      // const material = new MeshBasicMaterial( {color: 'orange'} );
-      // const cubeMesh = new Mesh( geometry, material );
-      // scene.add( cubeMesh );
-
-      // //3 The Camera
-      // const sizes = {
-      //     width: 800,
-      //     height: 600,
-      // }
-
-      // const camera = new PerspectiveCamera(75, sizes.width/ sizes.height);
-      // camera.position.z = 3; // Z let's you move backwards and forwards. X is sideways, Y is upward and do
-      // scene.add( camera );
-
-      // //4 The Renderer
-      // const threeCanvas= document.getElementById('three-canvas')
-      // const renderer = new WebGLRenderer({
-      //     canvas: threeCanvas,
-      // });
-
-      // renderer.setSize(sizes.width, sizes.height);
-
-      // const loader = new GLTFLoader();
-      // const loadedData = await loader.loadAsync(GlbFile);
-
-
-      // console.log('loadedData', loadedData)
-      // console.log('loadedData', loadedData.scene.children[0])
-      // const object = loadedData.scene.children[0];
-      // scene.add(loadedData.scene.children[0])
-
-      // let geoms = [];
-      // let meshes = [];
-      // object.traverse( function( o ) {
-      //   if ( o.isMesh ) {
-      //     console.log( o.geometry )
-      //     meshes.push(o);
-      //     geoms.push(o.geometry);
-      //   };
-      // });
-      // console.log('MESHES',meshes)
-      // //clone.updateMatrixWorld(true,true)
-      // //clone.traverse(e=>e.isMesh && meshes.push(e) && (geoms.push(( e.geometry.index ) ? e.geometry.toNonIndexed() : e.geometry().clone())))
-      // geoms.forEach((g,i)=>g.applyMatrix4(meshes[i].matrixWorld));
-      
-      // let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
-      // // gg.applyMatrix4(clone.matrix.clone().invert());
-      // // gg.userData.materials = meshes.map(m=>m.material)
-
-      // // console.log('gg', gg);
-
-      // const container = document.getElementById('viewer-container');
-      // console.log('VERTICES', Array.from(gg.attributes.position.array))
-      // const res = await axios({
-      //   method: "post",
-      //   url: "http://localhost:5000/speckle/postData",
-      //   headers: {
-      //     "content-type": "application/json"
-      //   },
-      //   data: {
-      //     vertices: Array.from(gg.attributes.position.array),
-      //     faces: Array.from(gg.index.array),
-      //     colors: Array.from(gg.attributes.color.array),
-      //     // colors: colors
-      //   }
-      // })
-
-      // console.log('SPECKLE', res.data)
-
-      // const newViewer = new Viewer(container, {
-      //    showStats: false,
-      //    environmentSrc: '',
-      //  });
-      //  await newViewer.init();
-      //  newViewer.on(ViewerEvent.LoadProgress, (arg) => {
-      //   console.log(arg)
-      // })
-      //  //await newViewer.loadObject(`${hostUrl}/${streamId}/${commitId}`, '6360a3aac1a47d32ddadf4efbe529e3a6fb2669088')
-      //  await newViewer.loadObject("https://speckle.xyz/streams/1af93c4201/objects/1e40e9e0b9d011446d02de03e231092d", '7a12985629a662ea4f063920b1b944cc0b80f358ce');
-      //  console.log('newViewer', newViewer)
-      //  setViewer(newViewer);
-      setLoading(false)
+      setLoading(false);
     };
     init();
   }, []);
@@ -202,26 +113,6 @@ const SpeckleConnector = ({
     setOutputCommitUrl("");
   }
 
-  // const CREATE_LINK_MUTATION = gql`
-  //   mutation PostMutation(
-  //     $description: String!
-  //     $url: String!
-  //   ) {
-  //     post(description: $description, url: $url) {
-  //       id
-  //       createdAt
-  //       url
-  //       description
-  //     }
-  //   }
-  // `;
-
-  // const [createLink] = useMutation(CREATE_LINK_MUTATION, {
-  //   variables: {
-  //     description: formState.description,
-  //     url: formState.url
-  //   }
-  // });
 
   const handleUpdateElements = async () => {
     // createLink();
@@ -326,8 +217,7 @@ const SpeckleConnector = ({
 
   const postGeometry = async (properties, objSelected) => {
     try {
-      console.log('properties', properties);
-      console.log('objSelected', objSelected);
+      setLoading(true);
 
       const updatedProperties = [];
 
@@ -337,7 +227,7 @@ const SpeckleConnector = ({
 
       const objectGeometry = await axios({
         method: "post",
-        url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/ifc`,
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/get-model-file/ifc`,
         headers: {
           "content-type": "application/json",
           "X-Auth-Token": sessionStorage.getItem("token"),
@@ -349,14 +239,87 @@ const SpeckleConnector = ({
       console.log("type ", typeof objectGeometry.data);
       console.log("instance ", objectGeometry.data instanceof ArrayBuffer);
 
+      const scene = new Scene();
 
-      saveArrayBuffer(objectGeometry.data, 'newmodel.ifc');
+      const ifcLoader = new IFCLoader();
+      await ifcLoader.ifcManager.setWasmPath("../../files/");
+      // saveArrayBuffer(objectGeometry.data, 'newmodel.ifc');
       // console.log("objectGeometry", objectGeometry);
 
 
+      console.log("IfcFile", IfcFile)
+      const ifcBlob = new Blob([objectGeometry.data], { type: 'application/octet-stream' });
+      console.log('ifcBlob', ifcBlob)
+      var ifcFile = new File([ifcBlob], "ifcFile.ifc");
+      console.log('ifcFile', ifcFile)
+      const ifcURL = URL.createObjectURL(ifcFile);
+      console.log('ifcURL', ifcURL)
 
+      const model = await ifcLoader.loadAsync(ifcURL);
+      console.log('model', model)
+      const allIDs = Array.from(
+        new Set(model.geometry.attributes.expressID.array)
+      )
+
+      //const scene = new Scene();
+      scene.add(model);
+
+      console.log('allIDs', allIDs)
+      console.log('model.modelID', model.modelID)
+      console.log('model.parent', model.parent)
+
+      const subset = ifcLoader.ifcManager.createSubset({
+        modelID: model.modelID,
+        ids: allIDs,
+        applyBVH: true,
+        scene: model.parent,
+        removePrevious: true,
+        customID: `full-model-subset-${model.modelID}`,
+      });
+      console.log('subset', subset);
+      const elementMesh = await ifcLoader.ifcManager.getSubset(model.modelID, null, `full-model-subset-${model.modelID}`);
+      console.log('elementMesh', elementMesh);
+
+
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:5000/speckle/postData",
+        headers: {
+          "content-type": "application/json"
+        },
+        data: {
+          vertices: Array.from(elementMesh.geometry.attributes.position.array),
+          faces: Array.from(elementMesh.geometry.index.array),
+          colors: Array.from(elementMesh.geometry.index.array)
+        }
+      });
+
+      console.log('url', res.data)
+      const commitUrl = res.data;
+      window.open(commitUrl, '_blank').focus();
+      await ifcLoader.ifcManager.dispose();
+
+      setLoading(false);
     } catch (err) {
-      console.log('error ', err);
+      getError(err);
+    }
+  };
+
+  const getError = (err) => {
+    if (err.response?.status === 400) {
+      setStatus("the data sent is not correct")
+    }
+    if (err.response?.status === 401) {
+      setStatus("unauthorized, the token must be in the header")
+    }
+    if (err.response?.status === 403) {
+      setStatus("access denied")
+    }
+    if (err.response?.status === 404) {
+      setStatus("the object id doesn't exist")
+    }
+    if (err.response?.status === 410) {
+      setStatus("resource unavailable")
     }
   };
 
@@ -401,48 +364,50 @@ const SpeckleConnector = ({
       //clone.traverse(e=>e.isMesh && meshes.push(e) && (geoms.push(( e.geometry.index ) ? e.geometry.toNonIndexed() : e.geometry().clone())))
       geoms.forEach((g,i)=>g.applyMatrix4(meshes[i].matrixWorld));
       
-      let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
+      // let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
       // gg.applyMatrix4(clone.matrix.clone().invert());
       // gg.userData.materials = meshes.map(m=>m.material)
 
       // console.log('gg', gg);
 
-      console.log('VERTICES', Array.from(gg.attributes.position.array))
-      const res = await axios({
-        method: "post",
-        url: "http://localhost:5000/speckle/postData",
-        headers: {
-          "content-type": "application/json"
-        },
-        data: {
-          vertices: Array.from(gg.attributes.position.array),
-          faces: Array.from(gg.index.array),
-          colors: Array.from(gg.attributes.color.array),
-          // colors: colors
-        }
-      })
+      // console.log('VERTICES', Array.from(gg.attributes.position.array))
+      // const res = await axios({
+      //   method: "post",
+      //   url: "http://localhost:5000/speckle/postData",
+      //   headers: {
+      //     "content-type": "application/json"
+      //   },
+      //   data: {
+      //     vertices: Array.from(gg.attributes.position.array),
+      //     faces: Array.from(gg.index.array),
+      //     colors: Array.from(gg.attributes.color.array),
+      //     // colors: colors
+      //   }
+      // })
   }
 
   return (
     <>
-      {loading ?
+      <Grid row align="left">
+        <Button
+          variant="contained"
+          onClick={() => {
+            postGeometry(properties, selectedObject);
+          }}
+          color="primary"
+          className={classes.button}
+          startIcon={<img src={SpeckleIcon} style={{height: "2em", width: "2em"}}/>}
+          endIcon={loading && <CircularProgress style={{ color: "White", height: "1em", width: "1em" }} />}
+        >
+          Send to Speckle
+        </Button>
+      </Grid>
+      {/* {loading ?
         <Grid item xs={12} style={{ textAlign: "center" }}>
           <CircularProgress style={{ color: "OrangeRed" }} />
         </Grid>
         :
         <>
-          <Grid row align="left">
-            <Button
-              variant="contained"
-              onClick={() => {
-                postGeometry(properties, selectedObject);
-              }}
-              color="primary"
-              className={classes.button}
-            >
-              Géométrie
-            </Button>
-          </Grid>
           <Grid item xs={12}>
             <Typography variant="subtitle1" component="h3">
             Open dthX - Speckle: URL du Commit pour l'enrichissement
@@ -515,13 +480,10 @@ const SpeckleConnector = ({
             }
           </Grid>
           {(host !== "" && stream !== "" && commit !== "") &&
-          // <iframe src={`${host}/${stream}/${commit}}`} width="600" height="400" frameborder="0"></iframe>
           <Grid item xs={12} style={{textAlign: "center"}}>
             <iframe src={`${host}/embed?stream=${stream}&commit=${commit}&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true`} width="600" height="400" frameborder="0"></iframe>
           </Grid>
-          // <div id="viewer-container" style={{width: 400, height: 400}}></div>
           }
-        {/* <div className="np-w-full np-h-full np-pointer-events-auto np-bg-pale" ref={containerRef} /> */}
           <Button
           variant="contained"
             onClick={handleUpdateElements}
@@ -530,9 +492,10 @@ const SpeckleConnector = ({
             Enrichissement
           </Button>
         </>
-      }
+      }*/}
+      {/* <input type="file" id="file-input" accept=".ifc, .ifcXML, .ifcZIP"></input>
       <canvas id="three-canvas" style={{width: 400, height: 400, backgroundColor: 'red'}}></canvas>
-      <div id="viewer-container" style={{width: 400, height: 400, backgroundColor: 'red'}}></div>
+      <div id="viewer-container" style={{width: 400, height: 400, backgroundColor: 'red'}}></div> */}
     {/* <iframe src="https://speckle.xyz/embed?stream=5e27173ad3&object=35fd8ddce68a4cae3327b9e43584b609&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true" width="600" height="400" frameborder="0"></iframe> */}
     </>
   );

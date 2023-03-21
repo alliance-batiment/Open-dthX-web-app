@@ -19,7 +19,6 @@ import {
 } from '@material-ui/core';
 import Icon from './Icon.svg';
 import Logo from './logo_Open_dthX.png';
-import SectionAnalysis from './Views/SectionAnalysis/SectionAnalysis';
 import DatBimApi from './Views/DatBimApi/DatBimApi';
 
 const Menu = {
@@ -79,8 +78,8 @@ const App = () => {
           menu={Menu}
         >
           <Switch>
-            <Route exact path="/my-app-name" component={DatBimApi} />
-            <Redirect from="/" to="/my-app-name" />
+            <Route exact path="/open-dthx" component={DatBimApi} />
+            <Redirect from="/" to="/open-dthx" />
           </Switch>
         </AppContainerElem>
       </Router>
