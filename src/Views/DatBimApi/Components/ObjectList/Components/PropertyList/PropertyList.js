@@ -377,14 +377,16 @@ const PropertyList = ({
         }
       </Table>
       <Grid container>
-        <Grid item xs={6} align="left">
+      {(selectedObject && selectedObject !== "") && 
+        <Grid item xs={12} align="left">
           <SpeckleConnector
             selectedObject={selectedObject}
             properties={properties}
             setProperties = {setProperties}
           />
         </Grid>
-        <Grid item xs={6} align="right">
+         }
+        {/* <Grid item xs={6} align="right">
           {(selectedObject && selectedObject !== "") && 
             <Button
               variant="contained"
@@ -400,7 +402,7 @@ const PropertyList = ({
               Ajouter
             </Button>
           }
-        </Grid>
+        </Grid> */}
       </Grid>
       {(status !== "") &&
         <Grid item xs={12}>

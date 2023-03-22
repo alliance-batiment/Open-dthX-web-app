@@ -1,5 +1,11 @@
 ![Open-dthX-web-app](./AllianceBatiment.jpeg "Open-dthX-web-app")
 
+## Se connecter à l'API Open-dthX
+
+Afin de permettre aux acteurs de la construction de pouvoir se connecter à des référentiels BIM et a en récupérer de la géométrie au format (IFC, GLB) ainsi que de la donnée au format Open-dthX.
+
+Démo live: 👉 <a href="https://open-dthx-connector.netlify.app" target="_blank">Open-dthX Web App</a> 👈
+
 ## Sommaire
 
 - [Mise en route](#installations)

@@ -52,19 +52,26 @@ import SpeckleIcon from "./Img/SpeckleIcon.png"
 
 const useStyles = makeStyles((theme) => ({
   search: {
-    height: "3em",
+    margin:theme.spacing(1),
+    // height: "3em",
     padding: "2px 4px",
     display: "flex",
     alignItems: "center",
-    width: "100%",
+    // width: "100%",
     color: "blue",
     // marginBotton: "2em",
     "&:disabled": {
       cursor: "not-allowed",
     },
   },
+  button: {
+    margin:theme.spacing(1),
+    // color: "blue",
+    // backgroundColor: "white"
+  },
   input: {
-    marginLeft: theme.spacing(1),
+    margin:theme.spacing(1),
+    color: "blue",
     flex: 1,
   },
   iconButton: {
@@ -167,8 +174,11 @@ const SpeckleConnector = ({
     }
   }
 
-  const handleCopyCommit = async () => {
-
+  const handleCopyCommit = async () => {  
+    if(outputCommitUrl !== "") {
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(outputCommitUrl);
+    }
   }
 
   const handleShowCommit = async () => {
@@ -278,9 +288,8 @@ const SpeckleConnector = ({
       });
       console.log('subset', subset);
       const elementMesh = await ifcLoader.ifcManager.getSubset(model.modelID, null, `full-model-subset-${model.modelID}`);
-      console.log('elementMesh', elementMesh);
 
-
+      
       const res = await axios({
         method: "post",
         url: "http://localhost:5000/speckle/postData",
@@ -296,11 +305,14 @@ const SpeckleConnector = ({
 
       console.log('url', res.data)
       const commitUrl = res.data;
+      setOutputCommitUrl(commitUrl);
       window.open(commitUrl, '_blank').focus();
       await ifcLoader.ifcManager.dispose();
 
       setLoading(false);
     } catch (err) {
+      setOutputCommitUrl("");
+      setLoading(false);
       getError(err);
     }
   };
@@ -388,7 +400,7 @@ const SpeckleConnector = ({
 
   return (
     <>
-      <Grid row align="left">
+      <Grid item xs={12}>
         <Button
           variant="contained"
           onClick={() => {
@@ -402,6 +414,39 @@ const SpeckleConnector = ({
           Send to Speckle
         </Button>
       </Grid>
+      <Grid item xs={12}>
+            {(outputCommitUrl !== "") &&
+            <Paper component="form" className={classes.search}>
+            <InputBase
+              value={outputCommitUrl}
+              className={classes.input}
+              placeholder={"URL du commit"}
+              inputProps={{ "aria-label": "search google maps" }}
+              // onChange={(e) => handleSetUrl(e.target.value)}
+              // onKeyDown={onKeyDown}
+            />
+            <ButtonGroup aria-label="search button group" className={classes.iconButton}>
+              <Button
+                className={classes.iconButton}
+                onClick={handleCopyCommit}
+              >
+                <FileCopyIcon
+                  className={classes.iconButton}
+                />
+              </Button>
+              <Button
+                className={classes.iconButton}
+                onClick={handleShowCommit}
+              >
+                <VisibilityIcon
+                  className={classes.iconButton}
+                />
+              </Button>
+            </ButtonGroup>
+          </Paper>
+                  
+            }
+          </Grid>
       {/* {loading ?
         <Grid item xs={12} style={{ textAlign: "center" }}>
           <CircularProgress style={{ color: "OrangeRed" }} />
