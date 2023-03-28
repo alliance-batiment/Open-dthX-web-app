@@ -21,7 +21,7 @@ import {
   InputBase,
   ButtonGroup
 } from '@material-ui/core';
-
+import SpeckleConnector from "./Components/SpeckleConnector";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -80,8 +80,36 @@ const Connectors = ({
 
 
   return (
-    <Paper>
-        HELLO
+    <Paper style={{padding: '1em' }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="title1" component="h3">
+          Liste de Connecteurs:
+          </Typography>
+        </Grid>
+        {/* <Grid item xs={12}>
+          <Typography variant="subtitle1" component="h4">
+             Connecteur IFC:
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+
+        </Grid> */}
+        <Grid item xs={12}>
+          <Typography variant="subtitle1" component="h4">
+             Connecteur Speckle:
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+        {(selectedObject && selectedObject !== "") && 
+          <SpeckleConnector
+            selectedObject={selectedObject}
+            properties={properties}
+            setProperties = {setProperties}
+          />
+         }
+        </Grid>
+      </Grid>
     </Paper>
   );
 }

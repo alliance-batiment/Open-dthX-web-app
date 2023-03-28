@@ -289,24 +289,42 @@ const SpeckleConnector = ({
       console.log('subset', subset);
       const elementMesh = await ifcLoader.ifcManager.getSubset(model.modelID, null, `full-model-subset-${model.modelID}`);
 
-      
-      const res = await axios({
-        method: "post",
-        url: "http://localhost:5000/speckle/postData",
-        headers: {
-          "content-type": "application/json"
-        },
-        data: {
-          vertices: Array.from(elementMesh.geometry.attributes.position.array),
-          faces: Array.from(elementMesh.geometry.index.array),
-          colors: Array.from(elementMesh.geometry.index.array)
-        }
-      });
+      //--------------------------------------------------------------------------------------------------------------------
+      // Récupération des Vertices et des Faces de la Mesh à partir de l'IFC:
+      //--------------------------------------------------------------------------------------------------------------------
+      const vertices = Array.from(elementMesh.geometry.attributes.position.array);
+      console.log('VERTICES', vertices);
+      const faces = Array.from(elementMesh.geometry.index.array);
+      console.log('FACES', faces);
+      //--------------------------------------------------------------------------------------------------------------------
+      // A ajouter: envoi du Maillage à Revit de la même manière qu'avec DEF
+      //--------------------------------------------------------------------------------------------------------------------
 
-      console.log('url', res.data)
-      const commitUrl = res.data;
-      setOutputCommitUrl(commitUrl);
-      window.open(commitUrl, '_blank').focus();
+
+
+
+      //--------------------------------------------------------------------------------------------------------------------
+      // Connection à Speckle
+      //--------------------------------------------------------------------------------------------------------------------
+      // const res = await axios({
+      //   method: "post",
+      //   url: "http://localhost:5000/speckle/postData",
+      //   headers: {
+      //     "content-type": "application/json"
+      //   },
+      //   data: {
+      //     vertices: Array.from(elementMesh.geometry.attributes.position.array),
+      //     faces: Array.from(elementMesh.geometry.index.array),
+      //     colors: Array.from(elementMesh.geometry.index.array)
+      //   }
+      // });
+
+      // console.log('url', res.data)
+      // const commitUrl = res.data;
+      // setOutputCommitUrl(commitUrl);
+      // window.open(commitUrl, '_blank').focus();
+
+
       await ifcLoader.ifcManager.dispose();
 
       setLoading(false);

@@ -27,7 +27,6 @@ import moment from "moment";
 import SearchBar from "../../../../../../Components/SearchBar";
 import DefineTypeComponent from "./DefineTypeComponent";
 import InfoIcon from "@material-ui/icons/Info";
-import SpeckleConnector from "../SpeckleConnector";
 
 const useStyles = makeStyles((theme) => ({
   searchBar: {
@@ -376,15 +375,6 @@ const PropertyList = ({
         }
       </Table>
       <Grid container>
-      {(selectedObject && selectedObject !== "") && 
-        <Grid item xs={12} align="left">
-          <SpeckleConnector
-            selectedObject={selectedObject}
-            properties={properties}
-            setProperties = {setProperties}
-          />
-        </Grid>
-         }
         {/* <Grid item xs={6} align="right">
           {(selectedObject && selectedObject !== "") && 
             <Button

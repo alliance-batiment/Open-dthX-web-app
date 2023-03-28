@@ -23,7 +23,6 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SearchBar from "../../../../Components/SearchBar";
 
 import PropertyList from "./Components/PropertyList/PropertyList";
-import SpeckleConnector from "./Components/SpeckleConnector";
 import Connectors from "./Components/Connectors";
 
 const useStyles = makeStyles((theme) => ({
