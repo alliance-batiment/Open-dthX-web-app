@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   Grid,
   Button,
@@ -312,7 +311,7 @@ const PropertyList = ({
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow className={`${classes.root} ${classes.datBimCardTitle}`}>
-            <TableCell>Propriété</TableCell>
+            <TableCell>Propriétée</TableCell>
             <TableCell align="center">Info</TableCell>
             <TableCell align="center">Valeur</TableCell>
             <TableCell align="center">Unité</TableCell>
