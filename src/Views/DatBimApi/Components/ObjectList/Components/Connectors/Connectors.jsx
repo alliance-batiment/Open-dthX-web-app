@@ -22,7 +22,7 @@ import {
   ButtonGroup
 } from '@material-ui/core';
 import SpeckleConnector from "./Components/SpeckleConnector";
-
+import RevitConnector from "./Components/RevitConnector";
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -87,6 +87,8 @@ const Connectors = ({
           Liste de Connecteurs:
           </Typography>
         </Grid>
+        {(selectedObject && selectedObject !== "") && 
+        <>
         {/* <Grid item xs={12}>
           <Typography variant="subtitle1" component="h4">
              Connecteur IFC:
@@ -101,14 +103,26 @@ const Connectors = ({
           </Typography>
         </Grid>
         <Grid item xs={12}>
-        {(selectedObject && selectedObject !== "") && 
           <SpeckleConnector
             selectedObject={selectedObject}
             properties={properties}
             setProperties = {setProperties}
           />
-         }
         </Grid>
+        <Grid item xs={12}>
+          <Typography variant="subtitle1" component="h4">
+             Connecteur Revit:
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <RevitConnector
+            selectedObject={selectedObject}
+            properties={properties}
+            setProperties = {setProperties}
+          />
+        </Grid>
+        </>
+        }
       </Grid>
     </Paper>
   );

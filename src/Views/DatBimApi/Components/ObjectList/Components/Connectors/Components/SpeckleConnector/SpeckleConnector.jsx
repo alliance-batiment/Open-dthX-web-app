@@ -225,6 +225,9 @@ const SpeckleConnector = ({
     }
   }
 
+  const [vertices, setVertices] = useState([]);
+  const [faces, setFaces] = useState([]);
+
   const postGeometry = async (properties, objSelected) => {
     try {
       setLoading(true);
@@ -292,9 +295,14 @@ const SpeckleConnector = ({
       //--------------------------------------------------------------------------------------------------------------------
       // Récupération des Vertices et des Faces de la Mesh à partir de l'IFC:
       //--------------------------------------------------------------------------------------------------------------------
-      const vertices = Array.from(elementMesh.geometry.attributes.position.array);
+      
+      //const vertices = Array.from(elementMesh.geometry.attributes.position.array);
+      const newVertices = Array.from(elementMesh.geometry.attributes.position.array);
+      setVertices(newVertices);
       console.log('VERTICES', vertices);
-      const faces = Array.from(elementMesh.geometry.index.array);
+      //const faces = Array.from(elementMesh.geometry.index.array);
+      const newFaces = Array.from(elementMesh.geometry.index.array);
+      setFaces(newFaces);
       console.log('FACES', faces);
       //--------------------------------------------------------------------------------------------------------------------
       // A ajouter: envoi du Maillage à Revit de la même manière qu'avec DEF
@@ -306,22 +314,22 @@ const SpeckleConnector = ({
       //--------------------------------------------------------------------------------------------------------------------
       // Connection à Speckle
       //--------------------------------------------------------------------------------------------------------------------
-      // const res = await axios({
-      //   method: "post",
-      //   url: "http://localhost:5000/speckle/postData",
-      //   headers: {
-      //     "content-type": "application/json"
-      //   },
-      //   data: {
-      //     vertices: Array.from(elementMesh.geometry.attributes.position.array),
-      //     faces: Array.from(elementMesh.geometry.index.array),
-      //     colors: Array.from(elementMesh.geometry.index.array)
-      //   }
-      // });
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:5000/speckle/postData",
+        headers: {
+          "content-type": "application/json"
+        },
+        data: {
+          vertices: Array.from(elementMesh.geometry.attributes.position.array),
+          faces: Array.from(elementMesh.geometry.index.array),
+          colors: Array.from(elementMesh.geometry.index.array)
+        }
+      });
 
-      // console.log('url', res.data)
-      // const commitUrl = res.data;
-      // setOutputCommitUrl(commitUrl);
+      console.log('url', res.data)
+      const commitUrl = res.data;
+      setOutputCommitUrl(commitUrl);
       // window.open(commitUrl, '_blank').focus();
 
 
@@ -416,6 +424,20 @@ const SpeckleConnector = ({
       // })
   }
 
+  const handleCreateGeometry = async () =>{
+    try{
+      //setLoading(true);
+      alert('vertices from handleCreatGeometry : '+vertices);
+      alert('faces from handleCreatGeometry : '+faces);
+      await window.CefSharp.BindObjectAsync("connector");
+      const fileNameExported = await window.connector.creatGeometry();
+      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: vertices, faces: faces}));
+      //setLoading(false);
+    }catch (err) {
+      console.log({ "Error when saving elements": err });
+    }
+  }
+
   return (
     <>
       <Grid item xs={12}>
@@ -464,7 +486,7 @@ const SpeckleConnector = ({
           </Paper>
                   
             }
-          </Grid>
+      </Grid>
       {/* {loading ?
         <Grid item xs={12} style={{ textAlign: "center" }}>
           <CircularProgress style={{ color: "OrangeRed" }} />
