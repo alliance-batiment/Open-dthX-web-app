@@ -280,7 +280,7 @@ const SpeckleConnector = ({
       console.log('allIDs', allIDs)
       console.log('model.modelID', model.modelID)
       console.log('model.parent', model.parent)
-
+      
       const subset = ifcLoader.ifcManager.createSubset({
         modelID: model.modelID,
         ids: allIDs,
@@ -291,7 +291,7 @@ const SpeckleConnector = ({
       });
       console.log('subset', subset);
       const elementMesh = await ifcLoader.ifcManager.getSubset(model.modelID, null, `full-model-subset-${model.modelID}`);
-
+      
       //--------------------------------------------------------------------------------------------------------------------
       // Récupération des Vertices et des Faces de la Mesh à partir de l'IFC:
       //--------------------------------------------------------------------------------------------------------------------
