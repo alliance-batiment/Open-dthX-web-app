@@ -83,7 +83,7 @@ const PropertyList = ({
   handleShowMarketplace,
   properties,
   setProperties
-}) => {
+ }) => {
   const [searchInput, setSearchInput] = useState("");
   const [propertyListDefault, setPropertyListDefault] = useState([]);
   const [allChecked, setAllChecked] = useState(true);

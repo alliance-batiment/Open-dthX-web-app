@@ -225,8 +225,8 @@ const SpeckleConnector = ({
     }
   }
 
-  const [vertices, setVertices] = useState([]);
-  const [faces, setFaces] = useState([]);
+  //const [vertices, setVertices] = useState([]);
+  //const [faces, setFaces] = useState([]);
 
   const postGeometry = async (properties, objSelected) => {
     try {
@@ -296,13 +296,13 @@ const SpeckleConnector = ({
       // Récupération des Vertices et des Faces de la Mesh à partir de l'IFC:
       //--------------------------------------------------------------------------------------------------------------------
       
-      //const vertices = Array.from(elementMesh.geometry.attributes.position.array);
-      const newVertices = Array.from(elementMesh.geometry.attributes.position.array);
-      setVertices(newVertices);
+      const vertices = Array.from(elementMesh.geometry.attributes.position.array);
+      //const newVertices = Array.from(elementMesh.geometry.attributes.position.array);
+      //setVertices(newVertices);
       console.log('VERTICES', vertices);
-      //const faces = Array.from(elementMesh.geometry.index.array);
-      const newFaces = Array.from(elementMesh.geometry.index.array);
-      setFaces(newFaces);
+      const faces = Array.from(elementMesh.geometry.index.array);
+      //const newFaces = Array.from(elementMesh.geometry.index.array);
+      //setFaces(newFaces);
       console.log('FACES', faces);
       //--------------------------------------------------------------------------------------------------------------------
       // A ajouter: envoi du Maillage à Revit de la même manière qu'avec DEF
@@ -427,11 +427,11 @@ const SpeckleConnector = ({
   const handleCreateGeometry = async () =>{
     try{
       //setLoading(true);
-      alert('vertices from handleCreatGeometry : '+vertices);
-      alert('faces from handleCreatGeometry : '+faces);
+      //alert('vertices from handleCreatGeometry : '+vertices);
+      //alert('faces from handleCreatGeometry : '+faces);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
-      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: vertices, faces: faces}));
+      //await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: vertices, faces: faces}));
       //setLoading(false);
     }catch (err) {
       console.log({ "Error when saving elements": err });
