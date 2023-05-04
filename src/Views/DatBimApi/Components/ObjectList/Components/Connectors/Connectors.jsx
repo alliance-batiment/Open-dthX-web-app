@@ -23,6 +23,7 @@ import {
 } from '@material-ui/core';
 import SpeckleConnector from "./Components/SpeckleConnector";
 import RevitConnector from "./Components/RevitConnector";
+import IfcConnector from "./Components/IfcConnector";
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -97,13 +98,25 @@ const Connectors = ({
         <Grid item xs={12}>
 
         </Grid> */}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Typography variant="subtitle1" component="h4">
              Connecteur Speckle:
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <SpeckleConnector
+            selectedObject={selectedObject}
+            properties={properties}
+            setProperties = {setProperties}
+          />
+        </Grid> */}
+        <Grid item xs={12}>
+          <Typography variant="subtitle1" component="h4">
+             Connecteur IFC:
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <IfcConnector
             selectedObject={selectedObject}
             properties={properties}
             setProperties = {setProperties}
