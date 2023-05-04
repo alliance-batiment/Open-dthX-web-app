@@ -132,6 +132,8 @@ const RevitConnector = ({
   const [vertices, setVertices] = useState([]);
   const [faces, setFaces] = useState([]);
 
+  const [propertyListDefault, setPropertyListDefault] = useState([]);
+
   const postGeometry = async (properties, objSelected) => {
     try {
       setLoading(true);
@@ -152,6 +154,7 @@ const RevitConnector = ({
         },
         data: updatedProperties,
       });
+
       console.log("objectGeometry", objectGeometry);
       console.log("type ", typeof objectGeometry.data);
       console.log("instance ", objectGeometry.data instanceof ArrayBuffer);
@@ -202,29 +205,52 @@ const RevitConnector = ({
       //const vertices = Array.from(elementMesh.geometry.attributes.position.array);
       const newVertices = Array.from(elementMesh.geometry.attributes.position.array);
       setVertices(newVertices);
-      console.log('VERTICES', vertices);
+      console.log('VERTICES', newVertices);
+      //alert(newVertices);
       //const faces = Array.from(elementMesh.geometry.index.array);
       const newFaces = Array.from(elementMesh.geometry.index.array);
       setFaces(newFaces);
-      console.log('FACES', faces);
+      console.log('FACES', newFaces);
       //--------------------------------------------------------------------------------------------------------------------
       // A ajouter: envoi du Maillage à Revit de la même manière qu'avec DEF
       //--------------------------------------------------------------------------------------------------------------------
+      
 
 
 
-
+      
       //--------------------------------------------------------------------------------------------------------------------
       // Connection à Revit
       //--------------------------------------------------------------------------------------------------------------------
-      await window.CefSharp.BindObjectAsync("connector");
-      const fileNameExported = await window.connector.createGeometry();
-      await window.CefSharp.PostMessage(JSON.stringify({ action: "createGeometry", vertices: newVertices, faces: newFaces}));
-
-
       await ifcLoader.ifcManager.dispose();
-
       setLoading(false);
+
+      // Liste qui stockera toutes les valeurs "ifc_property_name"
+      const propertiesList = [];
+
+      // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
+      for (let i = 0; i < properties.length; i++) {
+        const element = properties[i];
+        const property_name = element.property_name;
+        const num_value = element.num_value;
+        const text_value = element.text_value;
+
+        const propertyObject = {
+          property_name: property_name,
+          num_value: num_value,
+          text_value: text_value
+        };
+
+        propertiesList.push(propertyObject);
+      }
+
+      console.log(propertiesList);
+
+      await window.CefSharp.BindObjectAsync("connector");
+      const fileNameExported = await window.connector.creatGeometry();
+      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList}));
+
+
     } catch (err) {
       setLoading(false);
       getError(err);
@@ -265,6 +291,64 @@ const RevitConnector = ({
     link.download = filename;
     link.click();
   };
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Récupérer la liste des propriètes d'un objet séléctionné
+  //--------------------------------------------------------------------------------------------------------------------
+  // const getPropertiesValues = async () => {
+  //   try {
+  //     const { data: dataProp } = await axios.get(
+  //       `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values`,
+  //       {
+  //         headers: {
+  //           "X-Auth-Token": sessionStorage.getItem("token"),
+  //         },
+  //       }
+  //     );
+  //     console.log("data", dataProp);
+  //     const dataPropFilter = dataProp.data.filter(
+  //       (prop) => prop.property_visibility
+  //     );
+
+  //     const dataWithCheckStatus = dataPropFilter.map((property) => {
+  //       return {
+  //         ...property,
+  //         checked: true,
+  //       };
+  //     });
+
+  //     const temporaryFixProperties = dataWithCheckStatus.map((property) => {
+  //       if (
+  //         property.data_type_name === "Entier" &&
+  //         property.text_value === "A saisir"
+  //       ) {
+  //         return {
+  //           ...property,
+  //           text_value: 0,
+  //         };
+  //       }
+
+  //       if (property.data_type_name === "Lien") {
+  //         const newLink = property.text_value.replace("Https", "https");
+  //         return {
+  //           ...property,
+  //           text_value: newLink,
+  //         };
+  //       }
+  //       //console.log("Property =>", property);
+
+
+  //       return property;
+  //     });
+
+  //     setPropertyListDefault(temporaryFixProperties);
+  //     setProperties(temporaryFixProperties);
+
+  //     // console.log("temporaryFixProperties", temporaryFixProperties);
+  //   } catch (err) {
+  //     console.log("error", err);
+  //   }
+  // };
 
   return (
     <>
