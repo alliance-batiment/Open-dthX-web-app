@@ -2,24 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from "@material-ui/core";
 import {
   Grid,
-  TextField,
-  Box,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  FormControl,
-  Input,
-  Typography,
   CircularProgress,
-  Collapse,
-  IconButton,
-  InputBase,
-  ButtonGroup
 } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import PublishIcon from '@material-ui/icons/Publish';
