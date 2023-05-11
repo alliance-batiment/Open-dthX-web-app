@@ -19,7 +19,6 @@ import TreeClass from "./TreeClass";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import usePagination from "../../../../Utils/usePagination";
 import PaginationElem from "../../../../Components/PaginationElem";
-import DatabaseAnalysis from "../ObjectList/Components/DatabaseAnalysis/Components/DatabaseAnalysis";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -392,15 +391,6 @@ const ObjectsSetsList = ({
           Sélectionnez une collection d'objets:
         </Typography>
       </Grid>
-
-      <Grid item xs={12}>
-        <DatabaseAnalysis
-          selectedObject={selectedObject}
-          properties={properties}
-          setProperties = {setProperties}
-        />
-      </Grid>
-
 
       <Divider />
       <Grid item xs={12}>
