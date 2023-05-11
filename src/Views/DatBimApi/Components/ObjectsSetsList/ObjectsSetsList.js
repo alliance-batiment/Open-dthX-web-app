@@ -19,6 +19,7 @@ import TreeClass from "./TreeClass";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import usePagination from "../../../../Utils/usePagination";
 import PaginationElem from "../../../../Components/PaginationElem";
+import DatabaseAnalysis from "../ObjectList/Components/DatabaseAnalysis/Components/DatabaseAnalysis";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,6 +107,10 @@ const ObjectsSetsList = ({
   setBreadcrumbMap,
   handleNext,
   setActiveStep,
+
+  selectedObject,
+  properties,
+  setProperties,
 }) => {
   const classes = useStyles();
   const [objectsSetsList, setObjectsSetsList] = useState([]);
@@ -126,6 +131,7 @@ const ObjectsSetsList = ({
 
     if (eids?.length > 0) {
       getobjectsSetsBySelectedEids();
+      alert('eids, ', eids)
     } else {
       setObjectsSetsList(objectsSetsListDefault);
       getObjectsSets();
@@ -148,16 +154,16 @@ const ObjectsSetsList = ({
           }
         );
 
-        console.log("objectsSetsList", objectsSetsList);
+        //console.log("objectsSetsList", objectsSetsList);
 
         const objectsSets = getObjectsSetsList.data.data;
 
-        console.log("objectsSetsList", objectsSets);
+        //console.log("objectsSetsList", objectsSets);
 
         setObjectsSetsListDefault(objectsSets);
         setObjectsSetsList(objectsSets);
 
-        console.log("objectsSetsListDefault", objectsSets);
+        //console.log("objectsSetsListDefault", objectsSets);
         setObjectsSetsListLoader(false);
       }
     } catch (error) {
@@ -179,6 +185,24 @@ const ObjectsSetsList = ({
 
       setObjectsSetsList(objectsSetsBySelectedClass.data.data);
       setObjectsSetsListWithEIDS(objectsSetsBySelectedClass.data.data);
+
+      /** boucle sur toutes les fiches produits appartenant à PBM Groupe */
+      let objectsSetsByPBMGroupFamille = [];
+      objectsSetsBySelectedClass.data.data.forEach(product => {
+        if(product.organization_name === "PBM Groupe"){
+          objectsSetsByPBMGroupFamille.push(product);
+        }
+      });
+      console.log(objectsSetsByPBMGroupFamille);
+      /** dans chaque fiche produit récupérer la liste de objets */
+      // objectsSetsByPBMGroupFamille.forEach(objet => {
+        
+      // });
+
+      /** dans chaques objets la liste des propriétés */
+
+
+      
       setObjectsSetsListLoader(false);
     } catch (error) {
       console.error(error);
@@ -192,7 +216,7 @@ const ObjectsSetsList = ({
         0,
         eids[0]
       );
-      console.log("ifcClass", ifcClass);
+      //console.log("ifcClass", ifcClass);
       const treeClassList = await axios.get(
         `${process.env.REACT_APP_API_DATBIM}/classes/mapping/${ifcClass}`,
         {
@@ -368,6 +392,16 @@ const ObjectsSetsList = ({
           Sélectionnez une collection d'objets:
         </Typography>
       </Grid>
+
+      <Grid item xs={12}>
+        <DatabaseAnalysis
+          selectedObject={selectedObject}
+          properties={properties}
+          setProperties = {setProperties}
+        />
+      </Grid>
+
+
       <Divider />
       <Grid item xs={12}>
         <SearchBar

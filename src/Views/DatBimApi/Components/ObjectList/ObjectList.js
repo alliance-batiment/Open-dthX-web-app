@@ -106,7 +106,7 @@ const ObjectList = ({
           },
         }
       );
-      // console.log("selectorsOfObjectSet.data", selectorsOfObjectSet.data);
+      //console.log("selectorsOfObjectSet.data", selectorsOfObjectSet.data);
       setSelectors(selectorsOfObjectSet.data);
       setSelectorsLoader(false);
     } catch (error) {
@@ -164,8 +164,26 @@ const ObjectList = ({
       );
 
       setObjectListing(treeOfObjectSet.data);
-      //console.log("objectListing ==>", treeOfObjectSet.data);
+      
+      /** dans chaque fiche produit récupérer la liste de objets */
+      let selectedClassLibelle = treeOfObjectSet.data.children;
+      console.log(selectedObjectSet);
+      console.log(selectedClassLibelle.children);
+      let selectedClassLibelleHtMarche = [];
+      selectedClassLibelle.forEach(element => {
+        selectedClassLibelleHtMarche.push(element.children);
+      });
+      console.log(selectedClassLibelleHtMarche);
 
+      let selectedClassLibelleHtMarcheNbMarches = [];
+      selectedClassLibelleHtMarche.forEach(element => {
+        element.forEach(_element => {selectedClassLibelleHtMarcheNbMarches.push(_element.children);});
+      });
+
+      console.log("objectListing ==>", selectedClassLibelleHtMarcheNbMarches);
+
+      console.log(properties);
+      
       setObjectsLoader(false);
     } catch (error) {
       console.error(error);
@@ -307,7 +325,7 @@ const ObjectList = ({
             maxWidth: 400,
             overflowY: "auto",
           }}
-        >
+         >
           {tree}
         </TreeView>
       </Grid>
