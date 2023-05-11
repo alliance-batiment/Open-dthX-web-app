@@ -1,0 +1,10 @@
+[[redirects]]
+  from = “/*”
+  to = “https://rest-api-rw.datbim.com/v3"
+  status = 200
+  force = true
+  headers = {Access-Control-Allow-Origin: “*”}
+[[redirects]]
+  from = “/*”
+  to = “/index.html”
+  status = 200
