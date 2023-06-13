@@ -61,7 +61,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Helmet>
-        <title>{`Open dthX | API connexion`}</title>
+        <title>{`opendthX | API connexion`}</title>
         <link rel="icon" type="image/png" href={Logo} sizes="16x16" />
       </Helmet>
       <Router history={history}>

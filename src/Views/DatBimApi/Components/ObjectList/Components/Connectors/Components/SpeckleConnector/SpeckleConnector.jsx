@@ -495,7 +495,7 @@ const SpeckleConnector = ({
         <>
           <Grid item xs={12}>
             <Typography variant="subtitle1" component="h3">
-            Open dthX - Speckle: URL du Commit pour l'enrichissement
+            opendthX - Speckle: URL du Commit pour l'enrichissement
             </Typography>
           </Grid>
           <Grid item xs={12}>

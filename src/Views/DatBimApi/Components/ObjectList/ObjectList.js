@@ -24,7 +24,8 @@ import SearchBar from "../../../../Components/SearchBar";
 
 import PropertyList from "./Components/PropertyList/PropertyList";
 import Connectors from "./Components/Connectors";
-
+import RevitConnector from "../ObjectList/Components/Connectors/Components/RevitConnector/RevitConnector";
+import IfcConnector from "../ObjectList/Components/Connectors/Components/IfcConnector/IfcConnector";
 const useStyles = makeStyles((theme) => ({
   link: {
     color: "inherit",
@@ -411,8 +412,8 @@ const ObjectList = ({
             variant="fullWidth"
             aria-label="full width tabs example"
           >
-            <Tab label="Propriétées" style={{textTransform: "none"}} {...a11yProps(0)} />
-            <Tab label="Connecteurs" style={{textTransform: "none"}} {...a11yProps(1)} />
+            <Tab label="Propriétés" style={{textTransform: "none"}} {...a11yProps(0)} />
+            {/* <Tab label="Connecteurs" style={{textTransform: "none"}} {...a11yProps(1)} /> */}
           </Tabs>
         </Paper>
         <TabPanel value={value} index={0}>
@@ -431,13 +432,26 @@ const ObjectList = ({
               setProperties = {setProperties}
             />
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        {typeof window.CefSharp !== "undefined" ? (
+          <RevitConnector
+            selectedObject={selectedObject}
+            properties={properties}
+            setProperties={setProperties}
+          />
+        ) : (
+          <IfcConnector
+            selectedObject={selectedObject}
+            properties={properties}
+            setProperties={setProperties}
+          />
+        )}
+        {/* <TabPanel value={value} index={1}>
           <Connectors 
               selectedObject={selectedObject}
               properties={properties}
               setProperties = {setProperties}
           />
-        </TabPanel>
+        </TabPanel> */}
         </Grid>
 
       </Grid>
