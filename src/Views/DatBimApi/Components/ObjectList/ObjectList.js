@@ -403,21 +403,21 @@ const ObjectList = ({
           )}
         </Grid>
         <Grid item sm={7}>
-        <Paper square style={{textTransform: "none"}}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="secondary"
-            textColor="inherit"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-          >
-            <Tab label="Propriétés" style={{textTransform: "none"}} {...a11yProps(0)} />
-            {/* <Tab label="Connecteurs" style={{textTransform: "none"}} {...a11yProps(1)} /> */}
-          </Tabs>
-        </Paper>
-        <TabPanel value={value} index={0}>
-          <PropertyList
+          <Paper square style={{ textTransform: "none" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="secondary"
+              textColor="inherit"
+              variant="fullWidth"
+              aria-label="full width tabs example"
+            >
+              <Tab label="Propriétés" style={{ textTransform: "none" }} {...a11yProps(0)} />
+              {/* <Tab label="Connecteurs" style={{textTransform: "none"}} {...a11yProps(1)} /> */}
+            </Tabs>
+          </Paper>
+          <TabPanel value={value} index={0}>
+            <PropertyList
               classes={classes}
               projectId={projectId}
               objSelected={objSelected}
@@ -429,23 +429,23 @@ const ObjectList = ({
               addElementsNewProperties={addElementsNewProperties}
               handleShowMarketplace={handleShowMarketplace}
               properties={properties}
-              setProperties = {setProperties}
+              setProperties={setProperties}
             />
-        </TabPanel>
-        {typeof window.CefSharp !== "undefined" ? (
-          <RevitConnector
-            selectedObject={selectedObject}
-            properties={properties}
-            setProperties={setProperties}
-          />
-        ) : (
-          <IfcConnector
-            selectedObject={selectedObject}
-            properties={properties}
-            setProperties={setProperties}
-          />
-        )}
-        {/* <TabPanel value={value} index={1}>
+          </TabPanel>
+          {typeof window.CefSharp !== "undefined" ? (
+            <RevitConnector
+              selectedObject={selectedObject}
+              properties={properties}
+              setProperties={setProperties}
+            />
+          ) : (
+            <IfcConnector
+              selectedObject={selectedObject}
+              properties={properties}
+              setProperties={setProperties}
+            />
+          )}
+          {/* <TabPanel value={value} index={1}>
           <Connectors 
               selectedObject={selectedObject}
               properties={properties}

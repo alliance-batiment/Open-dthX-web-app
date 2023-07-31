@@ -239,9 +239,8 @@ const RevitConnector = ({
       const propertiesList = [];
 
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
-
       for (let i = 0; i < signingProperties?.data?.property.length; i++) {
-        const element = properties[i];
+        const element = signingProperties?.data?.property[i];
         const property_name = element.property_name;
         const num_value = element.num_value;
         const text_value = element.text_value;
