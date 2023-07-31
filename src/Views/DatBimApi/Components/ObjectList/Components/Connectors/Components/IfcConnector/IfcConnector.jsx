@@ -29,12 +29,12 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useMutation, gql } from '@apollo/client';
 import axios from "axios";
-import { 
+import {
   Mesh,
   BufferGeometry,
-  BoxGeometry, 
-  MeshBasicMaterial, 
-  PerspectiveCamera, 
+  BoxGeometry,
+  MeshBasicMaterial,
+  PerspectiveCamera,
   WebGLRenderer,
   Scene,
 } from 'three';
@@ -45,7 +45,7 @@ import IFCIcon from "./Img/IFCIcon.png"
 
 const useStyles = makeStyles((theme) => ({
   search: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // height: "3em",
     padding: "2px 4px",
     display: "flex",
@@ -58,12 +58,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // color: "blue",
     // backgroundColor: "white"
   },
   input: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     color: "blue",
     flex: 1,
   },
@@ -140,11 +140,20 @@ const IfcConnector = ({
 
       const updatedProperties = [];
 
-      for(let property of properties) {
+      for (let property of properties) {
         updatedProperties.push(updatePorperty(property));
       }
+      console.log('updatedProperties', updatedProperties)
+      const signingProperties = await axios({
+        method: "post",
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
+        headers: {
+          "content-type": "application/json",
+          "X-Auth-Token": sessionStorage.getItem("token"),
+        },
+        data: updatedProperties,
+      });
 
-      console.log(updatedProperties)
       const objectGeometry = await axios({
         method: "post",
         url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/get-model-file/ifc`,
@@ -190,7 +199,7 @@ const IfcConnector = ({
   };
 
   const saveArrayBuffer = (buffer, filename) => {
-      save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
+    save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
   };
 
   const save = (blob, filename) => {
@@ -202,7 +211,7 @@ const IfcConnector = ({
     link.click();
   };
 
-  
+
   return (
     <>
       <Grid item xs={12}>
@@ -213,7 +222,7 @@ const IfcConnector = ({
           }}
           color="primary"
           className={classes.button}
-          startIcon={<img src={IFCIcon} style={{height: "2em", width: "2em"}}/>}
+          startIcon={<img src={IFCIcon} style={{ height: "2em", width: "2em" }} />}
           endIcon={loading && <CircularProgress style={{ color: "White", height: "1em", width: "1em" }} />}
         >
           Get IFC
