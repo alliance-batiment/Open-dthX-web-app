@@ -225,7 +225,7 @@ const RevitConnector = ({
       //--------------------------------------------------------------------------------------------------------------------
       await ifcLoader.ifcManager.dispose();
       setLoading(false);
-      
+
       // Liste qui stockera toutes les valeurs "ifc_property_name"
       const propertiesList = [];
 
@@ -251,7 +251,7 @@ const RevitConnector = ({
       }
 
       console.log(propertiesList);
-      console.log('vertices exported ',newVertices);
+      console.log('vertices exported ', newVertices);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
       await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList }));
@@ -281,7 +281,7 @@ const RevitConnector = ({
     }
   };
 
-  
+
 
   const saveArrayBuffer = (buffer, filename) => {
     save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
