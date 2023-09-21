@@ -155,7 +155,6 @@ const IfcConnector = ({
         },
         data: updatedProperties,
       });
-
       console.log(objectGeometry.data)
 
       saveArrayBuffer(objectGeometry.data, `${objSelected}.ifc`);

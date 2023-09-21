@@ -30,16 +30,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useMutation, gql } from '@apollo/client';
 import axios from "axios";
 import { 
-  Mesh,
-  BufferGeometry,
-  BoxGeometry, 
-  MeshBasicMaterial, 
-  PerspectiveCamera, 
-  WebGLRenderer,
   Scene,
 } from 'three';
-// import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-// import { BufferGeometryUtils } from 'three/addons/utils/BufferGeometryUtils.js';
 import { IFCLoader } from "web-ifc-three/IFCLoader";
 import RevitIcon from "./Img/RevitIcon.png"
 
@@ -86,12 +78,10 @@ const useStyles = makeStyles((theme) => ({
 const RevitConnector = ({
   selectedObject,
   properties,
-  setProperties
 }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("");
-
 
   useEffect(() => {
     const init = async () => {
@@ -99,8 +89,6 @@ const RevitConnector = ({
     };
     init();
   }, []);
-
-
 
   const updatePorperty = (property) => {
     switch (property.data_type_name) {
@@ -163,9 +151,6 @@ const RevitConnector = ({
 
       const ifcLoader = new IFCLoader();
       await ifcLoader.ifcManager.setWasmPath("../../files/");
-      // saveArrayBuffer(objectGeometry.data, 'newmodel.ifc');
-      // console.log("objectGeometry", objectGeometry);
-
 
       const ifcBlob = new Blob([objectGeometry.data], { type: 'application/octet-stream' });
       console.log('ifcBlob', ifcBlob)
@@ -211,23 +196,17 @@ const RevitConnector = ({
       const newFaces = Array.from(elementMesh.geometry.index.array);
       setFaces(newFaces);
       console.log('FACES', newFaces);
-      //--------------------------------------------------------------------------------------------------------------------
-      // A ajouter: envoi du Maillage à Revit de la même manière qu'avec DEF
-      //--------------------------------------------------------------------------------------------------------------------
-      
-
-
-
       
       //--------------------------------------------------------------------------------------------------------------------
       // Connection à Revit
       //--------------------------------------------------------------------------------------------------------------------
       await ifcLoader.ifcManager.dispose();
       setLoading(false);
-
+      
       // Liste qui stockera toutes les valeurs "ifc_property_name"
       const propertiesList = [];
 
+      console.log('properties API datBIM : ', properties)
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
       for (let i = 0; i < properties.length; i++) {
         const element = properties[i];
@@ -245,7 +224,7 @@ const RevitConnector = ({
       }
 
       console.log(propertiesList);
-
+      console.log('vertices exported ',newVertices);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
       await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList}));
@@ -275,12 +254,10 @@ const RevitConnector = ({
     }
   };
 
-  const saveString = (text, filename) => {
-    save(new Blob([text], { type: 'text/plain' }), filename);
-  };
+  
 
   const saveArrayBuffer = (buffer, filename) => {
-      save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
+    save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
   };
 
   const save = (blob, filename) => {
@@ -291,64 +268,6 @@ const RevitConnector = ({
     link.download = filename;
     link.click();
   };
-
-  //--------------------------------------------------------------------------------------------------------------------
-  // Récupérer la liste des propriètes d'un objet séléctionné
-  //--------------------------------------------------------------------------------------------------------------------
-  // const getPropertiesValues = async () => {
-  //   try {
-  //     const { data: dataProp } = await axios.get(
-  //       `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values`,
-  //       {
-  //         headers: {
-  //           "X-Auth-Token": sessionStorage.getItem("token"),
-  //         },
-  //       }
-  //     );
-  //     console.log("data", dataProp);
-  //     const dataPropFilter = dataProp.data.filter(
-  //       (prop) => prop.property_visibility
-  //     );
-
-  //     const dataWithCheckStatus = dataPropFilter.map((property) => {
-  //       return {
-  //         ...property,
-  //         checked: true,
-  //       };
-  //     });
-
-  //     const temporaryFixProperties = dataWithCheckStatus.map((property) => {
-  //       if (
-  //         property.data_type_name === "Entier" &&
-  //         property.text_value === "A saisir"
-  //       ) {
-  //         return {
-  //           ...property,
-  //           text_value: 0,
-  //         };
-  //       }
-
-  //       if (property.data_type_name === "Lien") {
-  //         const newLink = property.text_value.replace("Https", "https");
-  //         return {
-  //           ...property,
-  //           text_value: newLink,
-  //         };
-  //       }
-  //       //console.log("Property =>", property);
-
-
-  //       return property;
-  //     });
-
-  //     setPropertyListDefault(temporaryFixProperties);
-  //     setProperties(temporaryFixProperties);
-
-  //     // console.log("temporaryFixProperties", temporaryFixProperties);
-  //   } catch (err) {
-  //     console.log("error", err);
-  //   }
-  // };
 
   return (
     <>

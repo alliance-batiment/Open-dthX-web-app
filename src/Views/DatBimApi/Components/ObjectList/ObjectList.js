@@ -432,6 +432,12 @@ const ObjectList = ({
               setProperties = {setProperties}
             />
         </TabPanel>
+        {/** boutton pour dev à dégager */}
+        <RevitConnector
+          selectedObject={selectedObject}
+          properties={properties}
+          setProperties={setProperties}
+        />
         {typeof window.CefSharp !== "undefined" ? (
           <RevitConnector
             selectedObject={selectedObject}
