@@ -26,6 +26,7 @@ import PropertyList from "./Components/PropertyList/PropertyList";
 import Connectors from "./Components/Connectors";
 import RevitConnector from "../ObjectList/Components/Connectors/Components/RevitConnector/RevitConnector";
 import IfcConnector from "../ObjectList/Components/Connectors/Components/IfcConnector/IfcConnector";
+import SpeckleConnector from "../ObjectList/Components/Connectors/Components/SpeckleConnector";
 const useStyles = makeStyles((theme) => ({
   link: {
     color: "inherit",
@@ -439,11 +440,18 @@ const ObjectList = ({
               setProperties={setProperties}
             />
           ) : (
-            <IfcConnector
-              selectedObject={selectedObject}
-              properties={properties}
-              setProperties={setProperties}
-            />
+            <>
+              <IfcConnector
+                selectedObject={selectedObject}
+                properties={properties}
+                setProperties={setProperties}
+              />
+              <SpeckleConnector
+                selectedObject={selectedObject}
+                properties={properties}
+                setProperties={setProperties}
+              />
+            </>
           )}
           {/* <TabPanel value={value} index={1}>
           <Connectors 
