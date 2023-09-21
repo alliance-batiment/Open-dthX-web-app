@@ -431,26 +431,35 @@ const ObjectList = ({
               handleShowMarketplace={handleShowMarketplace}
               properties={properties}
               setProperties={setProperties}
+              selectorsRequest={selectorsRequest}
             />
           </TabPanel>
           {typeof window.CefSharp !== "undefined" ? (
-            <RevitConnector
-              selectedObject={selectedObject}
-              properties={properties}
-              setProperties={setProperties}
-            />
+            <>
+              {(properties?.length > 0) && (properties.find(p => p.property_id == '9384')) &&
+                <RevitConnector
+                  selectedObject={selectedObject}
+                  properties={properties}
+                  setProperties={setProperties}
+                />
+              }
+            </>
           ) : (
             <>
-              <IfcConnector
-                selectedObject={selectedObject}
-                properties={properties}
-                setProperties={setProperties}
-              />
-              <SpeckleConnector
-                selectedObject={selectedObject}
-                properties={properties}
-                setProperties={setProperties}
-              />
+              {(properties?.length > 0) && (properties.find(p => p.property_id == '9384')) &&
+                <>
+                  <IfcConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                  />
+                  <SpeckleConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                  />
+                </>
+              }
             </>
           )}
           {/* <TabPanel value={value} index={1}>

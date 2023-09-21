@@ -32,8 +32,14 @@ function toBoolean(property_value) {
   }
 }
 
-function DefineTypeComponent(type, property, propertyIndex, configureProperty) {
+function DefineTypeComponent(type, property, propertyIndex, configureProperty, selectorsRequest) {
   let component = null;
+  let inputValueSlider = selectorsRequest?.find(item => item.id == property.property_id)?.value;
+
+  if(inputValueSlider){
+    property.num_value = inputValueSlider;
+  }
+    
   switch (type) {
     case "Réel":
       component = (
@@ -169,7 +175,7 @@ function DefineTypeComponent(type, property, propertyIndex, configureProperty) {
           disabled={isStaticProperty(property.property_type)}
           name="num_value"
           onChange={configureProperty(propertyIndex, "num_value")}
-          defaultValue={parseFloat(property.num_value)}
+          defaultValue={parseFloat(inputValueSlider)}
           getAriaValueText={valuetext}
           aria-labelledby="discrete-slider-custom"
           min={parseFloat(property.min_interval)}

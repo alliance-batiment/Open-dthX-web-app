@@ -249,13 +249,15 @@ const DefineTypeComponent = ({
               min={selector.value_min}
               max={selector.value_max}
               onChangeCommitted={handleChangeIntervalCommitted}
+              value={selectorsRequest?.find(item => item.id === selector.id)?.value}
             />
           </Grid>
           <Grid item xs={4}>
             <Input
               className={`${classes.slider}`}
               defaultValue={selector.value_min}
-              value={selector.text_value}
+              //value={selector.text_value}
+              value={selectorsRequest?.find(item => item.id === selector.id)?.value}
               margin="dense"
               onChange={handleChangeIntervalValue}
               inputProps={{

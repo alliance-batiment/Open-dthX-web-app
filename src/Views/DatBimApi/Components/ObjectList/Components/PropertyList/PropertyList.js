@@ -82,7 +82,8 @@ const PropertyList = ({
   addElementsNewProperties,
   handleShowMarketplace,
   properties,
-  setProperties
+  setProperties,
+  selectorsRequest
 }) => {
   const [searchInput, setSearchInput] = useState("");
   const [propertyListDefault, setPropertyListDefault] = useState([]);
@@ -220,7 +221,6 @@ const PropertyList = ({
 
     // let keyValue = key ? key : 'text_value';
     let inputValue = e.target.value;
-
     let property = properties[index];
     const newPropertiesArr = [...properties];
     switch (property.data_type_name) {
@@ -308,7 +308,7 @@ const PropertyList = ({
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow className={`${classes.root} ${classes.datBimCardTitle}`}>
-            <TableCell>Propriétée</TableCell>
+            <TableCell>Propriété</TableCell>
             <TableCell align="center">Info</TableCell>
             <TableCell align="center">Valeur</TableCell>
             <TableCell align="center">Unité</TableCell>
@@ -353,7 +353,8 @@ const PropertyList = ({
                     property.data_type_name,
                     property,
                     propertyIndex,
-                    configureProperty
+                    configureProperty,
+                    selectorsRequest
                   )}
                 </TableCell>
                 <TableCell width="10%" align="center">
