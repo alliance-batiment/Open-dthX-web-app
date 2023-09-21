@@ -29,7 +29,13 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useMutation, gql } from '@apollo/client';
 import axios from "axios";
-import { 
+import {
+  Mesh,
+  BufferGeometry,
+  BoxGeometry,
+  MeshBasicMaterial,
+  PerspectiveCamera,
+  WebGLRenderer,
   Scene,
 } from 'three';
 import { IFCLoader } from "web-ifc-three/IFCLoader";
@@ -37,7 +43,7 @@ import RevitIcon from "./Img/RevitIcon.png"
 
 const useStyles = makeStyles((theme) => ({
   search: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // height: "3em",
     padding: "2px 4px",
     display: "flex",
@@ -50,12 +56,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // color: "blue",
     // backgroundColor: "white"
   },
   input: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     color: "blue",
     flex: 1,
   },
@@ -128,9 +134,19 @@ const RevitConnector = ({
 
       const updatedProperties = [];
 
-      for(let property of properties) {
+      for (let property of properties) {
         updatedProperties.push(updatePorperty(property));
       }
+
+      const signingProperties = await axios({
+        method: "post",
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
+        headers: {
+          "content-type": "application/json",
+          "X-Auth-Token": sessionStorage.getItem("token"),
+        },
+        data: updatedProperties,
+      });
 
       const objectGeometry = await axios({
         method: "post",
@@ -186,7 +202,7 @@ const RevitConnector = ({
       //--------------------------------------------------------------------------------------------------------------------
       // Récupération des Vertices et des Faces de la Mesh à partir de l'IFC:
       //--------------------------------------------------------------------------------------------------------------------
-      
+
       //const vertices = Array.from(elementMesh.geometry.attributes.position.array);
       const newVertices = Array.from(elementMesh.geometry.attributes.position.array);
       setVertices(newVertices);
@@ -196,7 +212,14 @@ const RevitConnector = ({
       const newFaces = Array.from(elementMesh.geometry.index.array);
       setFaces(newFaces);
       console.log('FACES', newFaces);
-      
+      //--------------------------------------------------------------------------------------------------------------------
+      // A ajouter: envoi du Maillage à Revit de la même manière qu'avec DEF
+      //--------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
       //--------------------------------------------------------------------------------------------------------------------
       // Connection à Revit
       //--------------------------------------------------------------------------------------------------------------------
@@ -208,8 +231,8 @@ const RevitConnector = ({
 
       console.log('properties API datBIM : ', properties)
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
-      for (let i = 0; i < properties.length; i++) {
-        const element = properties[i];
+      for (let i = 0; i < signingProperties?.data?.property.length; i++) {
+        const element = signingProperties?.data?.property[i];
         const property_name = element.property_name;
         const num_value = element.num_value;
         const text_value = element.text_value;
@@ -227,7 +250,7 @@ const RevitConnector = ({
       console.log('vertices exported ',newVertices);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
-      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList}));
+      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList }));
 
 
     } catch (err) {
@@ -279,7 +302,7 @@ const RevitConnector = ({
           }}
           color="primary"
           className={classes.button}
-          startIcon={<img src={RevitIcon} style={{height: "2em", width: "2em"}}/>}
+          startIcon={<img src={RevitIcon} style={{ height: "2em", width: "2em" }} />}
           endIcon={loading && <CircularProgress style={{ color: "White", height: "1em", width: "1em" }} />}
         >
           Send to Revit

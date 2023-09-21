@@ -27,7 +27,7 @@ import IfcConnector from "./Components/IfcConnector";
 
 const useStyles = makeStyles((theme) => ({
   search: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // height: "3em",
     padding: "2px 4px",
     display: "flex",
@@ -40,12 +40,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // color: "blue",
     // backgroundColor: "white"
   },
   input: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     color: "blue",
     flex: 1,
   },
@@ -81,16 +81,16 @@ const Connectors = ({
 
 
   return (
-    <Paper style={{padding: '1em' }}>
+    <Paper style={{ padding: '1em' }}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant="title1" component="h3">
-          Liste de Connecteurs:
+            Liste de Connecteurs:
           </Typography>
         </Grid>
-        {(selectedObject && selectedObject !== "") && 
-        <>
-        {/* <Grid item xs={12}>
+        {(selectedObject && selectedObject !== "") &&
+          <>
+            {/* <Grid item xs={12}>
           <Typography variant="subtitle1" component="h4">
              Connecteur IFC:
           </Typography>
@@ -98,7 +98,7 @@ const Connectors = ({
         <Grid item xs={12}>
 
         </Grid> */}
-        {/* <Grid item xs={12}>
+            {/* <Grid item xs={12}>
           <Typography variant="subtitle1" component="h4">
              Connecteur Speckle:
           </Typography>
@@ -110,31 +110,31 @@ const Connectors = ({
             setProperties = {setProperties}
           />
         </Grid> */}
-        <Grid item xs={12}>
-          <Typography variant="subtitle1" component="h4">
-             Connecteur IFC:
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" component="h4">
+                Connecteur IFC:
           </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <IfcConnector
-            selectedObject={selectedObject}
-            properties={properties}
-            setProperties = {setProperties}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="subtitle1" component="h4">
-             Connecteur Revit:
+            </Grid>
+            <Grid item xs={12}>
+              <IfcConnector
+                selectedObject={selectedObject}
+                properties={properties}
+                setProperties={setProperties}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" component="h4">
+                Connecteur Revit:
           </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <RevitConnector
-            selectedObject={selectedObject}
-            properties={properties}
-            setProperties = {setProperties}
-          />
-        </Grid>
-        </>
+            </Grid>
+            <Grid item xs={12}>
+              <RevitConnector
+                selectedObject={selectedObject}
+                properties={properties}
+                setProperties={setProperties}
+              />
+            </Grid>
+          </>
         }
       </Grid>
     </Paper>

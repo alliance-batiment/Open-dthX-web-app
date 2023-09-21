@@ -36,12 +36,12 @@ import GlbFile from "./Flamingo.glb";
 import IfcFile from "./newmodel.ifc";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
-import { 
+import {
   Mesh,
   BufferGeometry,
-  BoxGeometry, 
-  MeshBasicMaterial, 
-  PerspectiveCamera, 
+  BoxGeometry,
+  MeshBasicMaterial,
+  PerspectiveCamera,
   WebGLRenderer,
   Scene,
 } from 'three';
@@ -52,7 +52,7 @@ import SpeckleIcon from "./Img/SpeckleIcon.png"
 
 const useStyles = makeStyles((theme) => ({
   search: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // height: "3em",
     padding: "2px 4px",
     display: "flex",
@@ -65,12 +65,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     // color: "blue",
     // backgroundColor: "white"
   },
   input: {
-    margin:theme.spacing(1),
+    margin: theme.spacing(1),
     color: "blue",
     flex: 1,
   },
@@ -126,15 +126,15 @@ const SpeckleConnector = ({
   }
 
   const handleGetCommit = async () => {
-    if(commitUrl !== "") {
+    if (commitUrl !== "") {
       setLoading(true);
-      const hostUrl =  commitUrl.split('/streams/')[0]? commitUrl.split('/streams/')[0] : "";
+      const hostUrl = commitUrl.split('/streams/')[0] ? commitUrl.split('/streams/')[0] : "";
       console.log('hostUrl', hostUrl);
       setHost(hostUrl);
-      const streamId =  commitUrl.split('/streams/')[1]?.split('/commits/')[0]? commitUrl.split('/streams/')[1].split('/commits/')[0]: "";
+      const streamId = commitUrl.split('/streams/')[1]?.split('/commits/')[0] ? commitUrl.split('/streams/')[1].split('/commits/')[0] : "";
       console.log('streamId', streamId)
       setStream(streamId);
-      const commitId =  commitUrl.split('/commits/')[1]?commitUrl.split('/commits/')[1]: "";
+      const commitId = commitUrl.split('/commits/')[1] ? commitUrl.split('/commits/')[1] : "";
       console.log('commitId', commitId)
       setCommit(commitId);
       //await viewer.loadObject(`${hostUrl}/${streamId}/${commitId}`, '6360a3aac1a47d32ddadf4efbe529e3a6fb2669088')
@@ -144,7 +144,7 @@ const SpeckleConnector = ({
   }
 
   const handlePushCommit = async () => {
-    if(properties.length > 0) {
+    if (properties.length > 0) {
       console.log('properties', properties)
       if (host !== "" && stream !== "" && commit !== "") {
         try {
@@ -174,16 +174,16 @@ const SpeckleConnector = ({
     }
   }
 
-  const handleCopyCommit = async () => {  
-    if(outputCommitUrl !== "") {
+  const handleCopyCommit = async () => {
+    if (outputCommitUrl !== "") {
       // Copy the text inside the text field
       navigator.clipboard.writeText(outputCommitUrl);
     }
   }
 
   const handleShowCommit = async () => {
-    if(outputCommitUrl !== "") {
-      window.open(outputCommitUrl,'_blank')
+    if (outputCommitUrl !== "") {
+      window.open(outputCommitUrl, '_blank')
     }
   }
 
@@ -234,7 +234,7 @@ const SpeckleConnector = ({
 
       const updatedProperties = [];
 
-      for(let property of properties) {
+      for (let property of properties) {
         updatedProperties.push(updatePorperty(property));
       }
 
@@ -295,7 +295,7 @@ const SpeckleConnector = ({
       //--------------------------------------------------------------------------------------------------------------------
       // Récupération des Vertices et des Faces de la Mesh à partir de l'IFC:
       //--------------------------------------------------------------------------------------------------------------------
-      
+
       //const vertices = Array.from(elementMesh.geometry.attributes.position.array);
       const newVertices = Array.from(elementMesh.geometry.attributes.position.array);
       setVertices(newVertices);
@@ -366,7 +366,7 @@ const SpeckleConnector = ({
   };
 
   const saveArrayBuffer = (buffer, filename) => {
-      save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
+    save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
   };
 
   const save = (blob, filename) => {
@@ -379,61 +379,61 @@ const SpeckleConnector = ({
   };
 
   const getMeshFromFile = async () => {
-      const loader = new GLTFLoader();
-      const loadedData = await loader.loadAsync(GlbFile);
+    const loader = new GLTFLoader();
+    const loadedData = await loader.loadAsync(GlbFile);
 
 
-      // console.log('loadedData', loadedData)
-      // console.log('loadedData', loadedData.scene.children[0])
-      const object = loadedData.scene.children[0];
-      // scene.add(loadedData.scene.children[0])
+    // console.log('loadedData', loadedData)
+    // console.log('loadedData', loadedData.scene.children[0])
+    const object = loadedData.scene.children[0];
+    // scene.add(loadedData.scene.children[0])
 
-      let geoms = [];
-      let meshes = [];
-      object.traverse( function( o ) {
-        if ( o.isMesh ) {
-          console.log( o.geometry )
-          meshes.push(o);
-          geoms.push(o.geometry);
-        };
-      });
-      console.log('MESHES',meshes)
-      //clone.updateMatrixWorld(true,true)
-      //clone.traverse(e=>e.isMesh && meshes.push(e) && (geoms.push(( e.geometry.index ) ? e.geometry.toNonIndexed() : e.geometry().clone())))
-      geoms.forEach((g,i)=>g.applyMatrix4(meshes[i].matrixWorld));
-      
-      // let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
-      // gg.applyMatrix4(clone.matrix.clone().invert());
-      // gg.userData.materials = meshes.map(m=>m.material)
+    let geoms = [];
+    let meshes = [];
+    object.traverse(function (o) {
+      if (o.isMesh) {
+        console.log(o.geometry)
+        meshes.push(o);
+        geoms.push(o.geometry);
+      };
+    });
+    console.log('MESHES', meshes)
+    //clone.updateMatrixWorld(true,true)
+    //clone.traverse(e=>e.isMesh && meshes.push(e) && (geoms.push(( e.geometry.index ) ? e.geometry.toNonIndexed() : e.geometry().clone())))
+    geoms.forEach((g, i) => g.applyMatrix4(meshes[i].matrixWorld));
 
-      // console.log('gg', gg);
+    // let gg = BufferGeometryUtils.mergeBufferGeometries(geoms,true)
+    // gg.applyMatrix4(clone.matrix.clone().invert());
+    // gg.userData.materials = meshes.map(m=>m.material)
 
-      // console.log('VERTICES', Array.from(gg.attributes.position.array))
-      // const res = await axios({
-      //   method: "post",
-      //   url: "http://localhost:5000/speckle/postData",
-      //   headers: {
-      //     "content-type": "application/json"
-      //   },
-      //   data: {
-      //     vertices: Array.from(gg.attributes.position.array),
-      //     faces: Array.from(gg.index.array),
-      //     colors: Array.from(gg.attributes.color.array),
-      //     // colors: colors
-      //   }
-      // })
+    // console.log('gg', gg);
+
+    // console.log('VERTICES', Array.from(gg.attributes.position.array))
+    // const res = await axios({
+    //   method: "post",
+    //   url: "http://localhost:5000/speckle/postData",
+    //   headers: {
+    //     "content-type": "application/json"
+    //   },
+    //   data: {
+    //     vertices: Array.from(gg.attributes.position.array),
+    //     faces: Array.from(gg.index.array),
+    //     colors: Array.from(gg.attributes.color.array),
+    //     // colors: colors
+    //   }
+    // })
   }
 
-  const handleCreateGeometry = async () =>{
-    try{
+  const handleCreateGeometry = async () => {
+    try {
       //setLoading(true);
-      alert('vertices from handleCreatGeometry : '+vertices);
-      alert('faces from handleCreatGeometry : '+faces);
+      alert('vertices from handleCreatGeometry : ' + vertices);
+      alert('faces from handleCreatGeometry : ' + faces);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
-      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: vertices, faces: faces}));
+      await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: vertices, faces: faces }));
       //setLoading(false);
-    }catch (err) {
+    } catch (err) {
       console.log({ "Error when saving elements": err });
     }
   }
@@ -448,22 +448,22 @@ const SpeckleConnector = ({
           }}
           color="primary"
           className={classes.button}
-          startIcon={<img src={SpeckleIcon} style={{height: "2em", width: "2em"}}/>}
+          startIcon={<img src={SpeckleIcon} style={{ height: "2em", width: "2em" }} />}
           endIcon={loading && <CircularProgress style={{ color: "White", height: "1em", width: "1em" }} />}
         >
           Send to Speckle
         </Button>
       </Grid>
       <Grid item xs={12}>
-            {(outputCommitUrl !== "") &&
-            <Paper component="form" className={classes.search}>
+        {(outputCommitUrl !== "") &&
+          <Paper component="form" className={classes.search}>
             <InputBase
               value={outputCommitUrl}
               className={classes.input}
               placeholder={"URL du commit"}
               inputProps={{ "aria-label": "search google maps" }}
-              // onChange={(e) => handleSetUrl(e.target.value)}
-              // onKeyDown={onKeyDown}
+            // onChange={(e) => handleSetUrl(e.target.value)}
+            // onKeyDown={onKeyDown}
             />
             <ButtonGroup aria-label="search button group" className={classes.iconButton}>
               <Button
@@ -484,8 +484,8 @@ const SpeckleConnector = ({
               </Button>
             </ButtonGroup>
           </Paper>
-                  
-            }
+
+        }
       </Grid>
       {/* {loading ?
         <Grid item xs={12} style={{ textAlign: "center" }}>
@@ -581,7 +581,7 @@ const SpeckleConnector = ({
       {/* <input type="file" id="file-input" accept=".ifc, .ifcXML, .ifcZIP"></input>
       <canvas id="three-canvas" style={{width: 400, height: 400, backgroundColor: 'red'}}></canvas>
       <div id="viewer-container" style={{width: 400, height: 400, backgroundColor: 'red'}}></div> */}
-    {/* <iframe src="https://speckle.xyz/embed?stream=5e27173ad3&object=35fd8ddce68a4cae3327b9e43584b609&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true" width="600" height="400" frameborder="0"></iframe> */}
+      {/* <iframe src="https://speckle.xyz/embed?stream=5e27173ad3&object=35fd8ddce68a4cae3327b9e43584b609&transparent=true&autoload=true&hidecontrols=true&noscroll=true&hidesidebar=true&hideselectioninfo=true&commentslideshow=true" width="600" height="400" frameborder="0"></iframe> */}
     </>
   );
 }

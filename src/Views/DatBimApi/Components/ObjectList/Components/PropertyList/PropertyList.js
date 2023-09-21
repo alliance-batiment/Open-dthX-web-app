@@ -288,8 +288,6 @@ const PropertyList = ({
       data: updateProperties,
     });
 
-    console.log('data from datbim', signingProperties)
-
     // addElementsNewProperties({
     //   viewer,
     //   modelID,
@@ -328,50 +326,50 @@ const PropertyList = ({
             )}
           </TableRow>
         </TableHead>
-        {(selectedObject && selectedObject !== "") && 
-        <TableBody>
-          {properties?.map((property, propertyIndex) => (
-            <TableRow
-              key={propertyIndex}
-              className={`${classes.root} ${classes.datBimList}`}
-            >
-              <TableCell width="35%" component="th" scope="row">
-                {property.property_name}
-              </TableCell>
-              <TableCell width="10%" component="th" scope="row">
-                {property.property_definition && (
-                  <Tooltip
-                    title={`${property.property_definition}`}
-                    placement="top-start"
-                  >
-                    <IconButton>
-                      <InfoIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </TableCell>
-              <TableCell width="35%" align="right">
-                {DefineTypeComponent(
-                  property.data_type_name,
-                  property,
-                  propertyIndex,
-                  configureProperty
-                )}
-              </TableCell>
-              <TableCell width="10%" align="center">
-                {property.unit}
-              </TableCell>
-              <TableCell width="10%" align="center">
-                <Checkbox
-                  defaultChecked
-                  checked={properties[propertyIndex].checked}
-                  onChange={handleCheckedProperties}
-                  id={propertyIndex}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        {(selectedObject && selectedObject !== "") &&
+          <TableBody>
+            {properties?.map((property, propertyIndex) => (
+              <TableRow
+                key={propertyIndex}
+                className={`${classes.root} ${classes.datBimList}`}
+              >
+                <TableCell width="35%" component="th" scope="row">
+                  {property.property_name}
+                </TableCell>
+                <TableCell width="10%" component="th" scope="row">
+                  {property.property_definition && (
+                    <Tooltip
+                      title={`${property.property_definition}`}
+                      placement="top-start"
+                    >
+                      <IconButton>
+                        <InfoIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </TableCell>
+                <TableCell width="35%" align="right">
+                  {DefineTypeComponent(
+                    property.data_type_name,
+                    property,
+                    propertyIndex,
+                    configureProperty
+                  )}
+                </TableCell>
+                <TableCell width="10%" align="center">
+                  {property.unit}
+                </TableCell>
+                <TableCell width="10%" align="center">
+                  <Checkbox
+                    defaultChecked
+                    checked={properties[propertyIndex].checked}
+                    onChange={handleCheckedProperties}
+                    id={propertyIndex}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         }
       </Table>
       <Grid container>
