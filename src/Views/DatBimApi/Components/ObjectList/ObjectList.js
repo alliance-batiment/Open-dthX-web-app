@@ -436,7 +436,6 @@ const ObjectList = ({
           </TabPanel>
           {typeof window.CefSharp !== "undefined" ? (
             <>
-              {/* {(properties?.length > 0) && (properties.find(p => p.property_id == '9384')) && */}
               {(properties?.length > 0)  &&
                 <RevitConnector
                   selectedObject={selectedObject}
@@ -447,7 +446,6 @@ const ObjectList = ({
             </>
           ) : (
             <>
-              {/* {(properties?.length > 0) && (properties.find(p => p.property_id == '9384')) && */}
               {(properties?.length > 0)  &&
                 <>
                   <IfcConnector
