@@ -89,6 +89,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const {
+  REACT_APP_OPENDTHX_SPECKLE
+} = process.env;
 
 const SpeckleConnector = ({
   selectedObject,
@@ -314,9 +317,12 @@ const SpeckleConnector = ({
       //--------------------------------------------------------------------------------------------------------------------
       // Connection à Speckle
       //--------------------------------------------------------------------------------------------------------------------
+
+      console.log('REACT_APP_OPENDTHX_SPECKLE', `${REACT_APP_OPENDTHX_SPECKLE}/speckle/postData`)
       const res = await axios({
         method: "post",
-        url: "http://localhost:5000/speckle/postData",
+        // url: "http://localhost:5000/speckle/postData",
+        url: `http://0.0.0.0:5000/speckle/postData`,
         headers: {
           "content-type": "application/json"
         },
