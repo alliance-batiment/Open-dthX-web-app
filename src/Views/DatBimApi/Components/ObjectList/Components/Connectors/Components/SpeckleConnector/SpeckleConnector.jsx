@@ -328,8 +328,8 @@ const SpeckleConnector = ({
       });
 
       console.log('url', res.data)
-      const commitUrl = res.data;
-      setOutputCommitUrl(commitUrl);
+      const elementUrl = res.data.elementUrl;
+      setOutputCommitUrl(elementUrl);
       // window.open(commitUrl, '_blank').focus();
 
 

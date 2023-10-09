@@ -453,11 +453,11 @@ const ObjectList = ({
                     properties={properties}
                     setProperties={setProperties}
                   />
-                  {/* <SpeckleConnector
+                  <SpeckleConnector
                     selectedObject={selectedObject}
                     properties={properties}
                     setProperties={setProperties}
-                  /> */}
+                  />
                 </>
               }
             </>
