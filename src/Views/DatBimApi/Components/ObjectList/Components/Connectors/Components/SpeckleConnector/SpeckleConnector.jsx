@@ -322,7 +322,7 @@ const SpeckleConnector = ({
       const res = await axios({
         method: "post",
         // url: "http://localhost:5000/speckle/postData",
-        url: `http://0.0.0.0:5000/speckle/postData`,
+        url: `${REACT_APP_OPENDTHX_SPECKLE}/speckle/postData`,
         headers: {
           "content-type": "application/json"
         },
