@@ -27,6 +27,8 @@ import Connectors from "./Components/Connectors";
 import RevitConnector from "../ObjectList/Components/Connectors/Components/RevitConnector/RevitConnector";
 import IfcConnector from "../ObjectList/Components/Connectors/Components/IfcConnector/IfcConnector";
 import SpeckleConnector from "../ObjectList/Components/Connectors/Components/SpeckleConnector";
+import RevitSpeckleConnector from "../ObjectList/Components/Connectors/Components/RevitSpeckleConnector/RevitSpeckleConnector";
+
 const useStyles = makeStyles((theme) => ({
   link: {
     color: "inherit",
@@ -437,11 +439,14 @@ const ObjectList = ({
           {typeof window.CefSharp !== "undefined" ? (
             <>
               {(properties?.length > 0) &&
-                <RevitConnector
-                  selectedObject={selectedObject}
-                  properties={properties}
-                  setProperties={setProperties}
-                />
+                <>
+                  <RevitConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                  />
+                  <RevitSpeckleConnector />
+                </>
               }
             </>
           ) : (
@@ -452,6 +457,7 @@ const ObjectList = ({
                     selectedObject={selectedObject}
                     properties={properties}
                     setProperties={setProperties}
+                    selectedObjectName={selectedObjectName}
                   />
                   <SpeckleConnector
                     selectedObject={selectedObject}

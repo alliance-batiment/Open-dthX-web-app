@@ -86,7 +86,8 @@ const useStyles = makeStyles((theme) => ({
 const IfcConnector = ({
   selectedObject,
   properties,
-  setProperties
+  setProperties,
+  selectedObjectName
 }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
@@ -166,7 +167,8 @@ const IfcConnector = ({
       });
       console.log(objectGeometry.data)
 
-      saveArrayBuffer(objectGeometry.data, `${objSelected}.ifc`);
+      // saveArrayBuffer(objectGeometry.data, `${objSelected}.ifc`);
+      saveArrayBuffer(objectGeometry.data, `${selectedObjectName}-configure.ifc`);
 
       setLoading(false);
     } catch (err) {
