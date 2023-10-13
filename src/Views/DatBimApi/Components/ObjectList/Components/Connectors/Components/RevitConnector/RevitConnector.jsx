@@ -229,22 +229,23 @@ const RevitConnector = ({
       // Liste qui stockera toutes les valeurs "ifc_property_name"
       const propertiesList = [];
 
-      console.log('properties API datBIM : ', properties)
+      console.log('properties API datBIM : ', signingProperties?.data?.property)
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
       for (let i = 0; i < signingProperties?.data?.property.length; i++) {
         const element = signingProperties?.data?.property[i];
 
-        console.log('element -> ', element)
         const property_name = element.property_name;
         const num_value = element.num_value;
         const text_value = element.text_value;
         const unit = element.unit;
+        const typeId = element.data_type_id;
 
         const propertyObject = {
           property_name: property_name,
           num_value: num_value,
           text_value: text_value,
-          unit: unit
+          unit: unit,
+          typeId: typeId
         };
 
         propertiesList.push(propertyObject);
