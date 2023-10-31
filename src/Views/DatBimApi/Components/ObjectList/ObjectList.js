@@ -78,7 +78,7 @@ const ObjectList = ({
   const [selectedObjectName, setSelectedObjectName] = useState("");
   const [properties, setProperties] = useState([]);
   const [value, setValue] = useState(0);
-  const [isBeforeLastLevel, setIsBeforeLastLevel] = useState(false);
+  const [isLastLevel, setIsLastLevel] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -258,9 +258,9 @@ const ObjectList = ({
         : [null, count + 1];
       
     // Condition pour vérifier si l'élément a des enfants ou est le dernier niveau
-    let beforeLastLevel;
+    let lastLevel;
     if(nodes.children){
-      beforeLastLevel = !Array.isArray(nodes?.children[0]?.children) || nodes?.children[0]?.children?.length === 0;
+      lastLevel = !Array.isArray(nodes?.children) || nodes?.children?.length === 0;
     }
 
     return [
@@ -271,7 +271,7 @@ const ObjectList = ({
         onClick={() => {
           setSelectedObject(nodes.id);
           setSelectedObjectName(nodes.name);
-          setIsBeforeLastLevel(beforeLastLevel);
+          setIsLastLevel(lastLevel);
         }}
       >
         {children}
@@ -447,7 +447,7 @@ const ObjectList = ({
           </TabPanel>
           {typeof window.CefSharp !== "undefined" ? (
             <>
-              {(properties?.length > 0 && isBeforeLastLevel) &&
+              {(properties?.length > 0 && isLastLevel) &&
                 <>
                   <RevitConnector
                     selectedObject={selectedObject}
@@ -460,7 +460,7 @@ const ObjectList = ({
             </>
           ) : (
             <>
-              {(properties?.length > 0 && isBeforeLastLevel) &&
+              {(properties?.length > 0 && isLastLevel) &&
                 <>
                   <IfcConnector
                     selectedObject={selectedObject}
