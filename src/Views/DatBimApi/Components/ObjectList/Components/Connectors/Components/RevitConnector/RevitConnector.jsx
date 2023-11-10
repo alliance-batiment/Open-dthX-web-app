@@ -132,6 +132,8 @@ const RevitConnector = ({
     try {
       setLoading(true);
 
+      //const integrityProperty = await handleSendIntegrity();
+      
       const updatedProperties = [];
 
       for (let property of properties) {
@@ -233,22 +235,23 @@ const RevitConnector = ({
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
       for (let i = 0; i < signingProperties?.data?.property.length; i++) {
         const element = signingProperties?.data?.property[i];
-
-        const property_name = element.property_name;
-        const num_value = element.num_value;
-        const text_value = element.text_value;
-        const unit = element.unit;
-        const typeId = element.data_type_id;
-
-        const propertyObject = {
-          property_name: property_name,
-          num_value: num_value,
-          text_value: text_value,
-          unit: unit,
-          typeId: typeId
-        };
-
-        propertiesList.push(propertyObject);
+        if(element.property_visibility){
+          const property_name = element.property_name;
+          const num_value = element.num_value;
+          const text_value = element.text_value;
+          const unit = element.unit;
+          const typeId = element.data_type_id;
+          const ifc_type = element.ifc_type;
+          const propertyObject = {
+            property_name: property_name,
+            num_value: num_value,
+            text_value: text_value,
+            unit: unit,
+            typeId: typeId,
+            ifc_type: ifc_type
+          };
+          propertiesList.push(propertyObject);
+        }
       }
 
       console.log(propertiesList);
@@ -256,7 +259,6 @@ const RevitConnector = ({
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
       await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList }));
-
 
     } catch (err) {
       setLoading(false);
@@ -296,6 +298,17 @@ const RevitConnector = ({
     link.download = filename;
     link.click();
   };
+
+  const handleSendIntegrity = async () => {
+    let integrityProperty;
+    if (typeof window.CefSharp !== "undefined") {
+      setLoading(true);
+      await window.CefSharp.BindObjectAsync("connector");
+      integrityProperty = await window.connector.sendObjectIntegrity();
+      setLoading(false);
+    }
+    return integrityProperty;
+  }
 
   return (
     <>

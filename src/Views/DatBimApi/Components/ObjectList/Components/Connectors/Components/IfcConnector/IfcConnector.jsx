@@ -144,7 +144,8 @@ const IfcConnector = ({
       for (let property of properties) {
         updatedProperties.push(updatePorperty(property));
       }
-      console.log('updatedProperties', updatedProperties)
+      console.log('updatedProperties IfcConnector', updatedProperties);
+      
       const signingProperties = await axios({
         method: "post",
         url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
@@ -165,13 +166,14 @@ const IfcConnector = ({
         },
         data: updatedProperties,
       });
-      console.log(objectGeometry.data)
+      console.log('objectGeometry.data',objectGeometry.data)
 
       // saveArrayBuffer(objectGeometry.data, `${objSelected}.ifc`);
       saveArrayBuffer(objectGeometry.data, `${selectedObjectName}-configure.ifc`);
 
       setLoading(false);
     } catch (err) {
+      console.log('err IfcConnector', err);
       setLoading(false);
       getError(err);
     }
@@ -211,7 +213,6 @@ const IfcConnector = ({
     link.download = filename;
     link.click();
   };
-
 
   return (
     <>
