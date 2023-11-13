@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
 const RevitConnector = ({
   selectedObject,
   properties,
+  selectedPortal
 }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
@@ -132,17 +133,51 @@ const RevitConnector = ({
     try {
       setLoading(true);
 
-      //const integrityProperty = await handleSendIntegrity();
-      
+      const integrityProperty = await handleSendIntegrity();
+      //alert(integrityProperty);
       const updatedProperties = [];
 
       for (let property of properties) {
         updatedProperties.push(updatePorperty(property));
       }
 
+      if(integrityProperty !== undefined && integrityProperty !== '' && integrityProperty !== null){
+        let integrityPropertyToAdd = {
+          data_type_id: "4",
+          data_type_name: "Texte",
+          datbim_code: "IntegrityObjectSignature",
+          ifc_class: "Pset_opendthx",
+          ifc_factor_multiplicator: "1",
+          ifc_property_name: "IntegrityObjectSignature",
+          ifc_type: "IfcText",
+          list_value: "",
+          max_interval: 0,
+          min_interval: 0,
+          num_value: 0,
+          property_definition: "",
+          property_id: "",
+          property_name: "IntegrityObjectSignature",
+          property_type: "S",
+          property_visibility: true,
+          status: 1,
+          text_value: integrityProperty,
+          value:integrityProperty,
+          unit: null,
+          updated_at: ""
+        };
+
+        updatedProperties.push(integrityPropertyToAdd);
+      }
+      
+      console.log('updatedProperties', updatedProperties);
+      console.log('objSelected',objSelected);
+      const defaultIdPortal = 78;
+      const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
+
       const signingProperties = await axios({
         method: "post",
-        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
+        //url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing?idPortal=${idPortalToUse}`,
         headers: {
           "content-type": "application/json",
           "X-Auth-Token": sessionStorage.getItem("token"),
@@ -254,8 +289,10 @@ const RevitConnector = ({
         }
       }
 
+      // const newVertices = [];
+      // const newFaces = [];
       console.log(propertiesList);
-      console.log('vertices exported ', newVertices);
+      //console.log('vertices exported ', newVertices);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
       await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList }));

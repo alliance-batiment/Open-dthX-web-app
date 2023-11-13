@@ -66,6 +66,7 @@ const ObjectList = ({
   breadcrumbMap,
   handleShowMarketplace,
   setActiveStep,
+  selectedPortal
 }) => {
   const classes = useStyles();
 
@@ -453,6 +454,7 @@ const ObjectList = ({
                     selectedObject={selectedObject}
                     properties={properties}
                     setProperties={setProperties}
+                    selectedPortal={selectedPortal}
                   />
                   <RevitSpeckleConnector />
                 </>
@@ -467,11 +469,20 @@ const ObjectList = ({
                     properties={properties}
                     setProperties={setProperties}
                     selectedObjectName={selectedObjectName}
+                    selectedPortal={selectedPortal}
                   />
                   <SpeckleConnector
                     selectedObject={selectedObject}
                     properties={properties}
                     setProperties={setProperties}
+                    selectedPortal={selectedPortal}
+                  />
+
+                  <RevitConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                    selectedPortal={selectedPortal}
                   />
                 </>
               }

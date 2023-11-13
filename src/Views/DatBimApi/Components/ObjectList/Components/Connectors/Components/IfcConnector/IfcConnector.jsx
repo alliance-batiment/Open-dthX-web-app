@@ -87,7 +87,8 @@ const IfcConnector = ({
   selectedObject,
   properties,
   setProperties,
-  selectedObjectName
+  selectedObjectName,
+  selectedPortal
 }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
@@ -146,9 +147,13 @@ const IfcConnector = ({
       }
       console.log('updatedProperties IfcConnector', updatedProperties);
       
+      const defaultIdPortal = 78;
+      const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
+
       const signingProperties = await axios({
         method: "post",
-        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
+        // url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing?idPortal=${idPortalToUse}`,
         headers: {
           "content-type": "application/json",
           "X-Auth-Token": sessionStorage.getItem("token"),

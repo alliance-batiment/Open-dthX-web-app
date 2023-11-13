@@ -83,7 +83,8 @@ const PropertyList = ({
   handleShowMarketplace,
   properties,
   setProperties,
-  selectorsRequest
+  selectorsRequest,
+  selectedPortal
 }) => {
   const [searchInput, setSearchInput] = useState("");
   const [propertyListDefault, setPropertyListDefault] = useState([]);
@@ -91,6 +92,7 @@ const PropertyList = ({
   const [status, setStatus] = useState("");
   const history = useHistory();
   const classes = useStyles();
+  const [integrityObjectSignature, setIntegrityObjectSignature] = useState('');
 
   function searchProperty(input) {
     const filtered = propertyListDefault.filter((property) => {
@@ -109,10 +111,38 @@ const PropertyList = ({
     getData();
   }, [selectedObject]);
 
+  useEffect(() => {
+    const getIntegrity = async () => {
+      const integrityProperty = await handleSendIntegrity();
+      setIntegrityObjectSignature(integrityProperty);
+    }
+
+    getIntegrity();
+  }, [selectedObject]);
+  
+
+  const handleSendIntegrity = async () => {
+    let integrityProperty;
+    if (typeof window.CefSharp !== "undefined") {
+      await window.CefSharp.BindObjectAsync("connector");
+      integrityProperty = await window.connector.sendObjectIntegrity();
+    }
+    return integrityProperty;
+  }
+  
+  // Définir les paramètres
+  let order= 'asc';
+  let limit= 20;
+  let offset= 1;
+  let params='';
+  if(integrityObjectSignature !== undefined && integrityObjectSignature !== '' && integrityObjectSignature !== null){
+    params = `?order=${order}&limit=${limit}&offset=${offset}&IntegrityObjectSignature=${integrityObjectSignature}`;
+  }
+
   const getPropertiesValues = async () => {
     try {
       const { data: dataProp } = await axios.get(
-        `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values`,
+        `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values${params}`,
         {
           headers: {
             "X-Auth-Token": sessionStorage.getItem("token"),
@@ -278,9 +308,13 @@ const PropertyList = ({
 
     console.log('updateProperties', updateProperties)
 
+    const defaultIdPortal = 78;
+    const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
+
     const signingProperties = await axios({
       method: "post",
-      url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
+      // url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
+      url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing?idPortal=${idPortalToUse}`,
       headers: {
         "content-type": "application/json",
         "X-Auth-Token": sessionStorage.getItem("token"),
