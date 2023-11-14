@@ -339,10 +339,8 @@ const RevitConnector = ({
   const handleSendIntegrity = async () => {
     let integrityProperty;
     if (typeof window.CefSharp !== "undefined") {
-      setLoading(true);
       await window.CefSharp.BindObjectAsync("connector");
       integrityProperty = await window.connector.sendObjectIntegrity();
-      setLoading(false);
     }
     return integrityProperty;
   }
