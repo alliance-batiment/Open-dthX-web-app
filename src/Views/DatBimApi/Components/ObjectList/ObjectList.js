@@ -477,13 +477,6 @@ const ObjectList = ({
                     setProperties={setProperties}
                     selectedPortal={selectedPortal}
                   />
-
-                  <RevitConnector
-                    selectedObject={selectedObject}
-                    properties={properties}
-                    setProperties={setProperties}
-                    selectedPortal={selectedPortal}
-                  />
                 </>
               }
             </>

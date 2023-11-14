@@ -92,7 +92,7 @@ const PropertyList = ({
   const [status, setStatus] = useState("");
   const history = useHistory();
   const classes = useStyles();
-  const [integrityObjectSignature, setIntegrityObjectSignature] = useState('');
+  const [integrityObjectSignature, setIntegrityObjectSignature] = useState('316f6e4adbbe39a7efbc8b3df5e998a539bfbf8e86dd31eaeb2af28515b89d6db837c5f753c540b5838a7b25c511139fc4cceff611b7a36edea18af7cf8157aff1b0cbe92bdf5665ca5fce4035d6ab8e647ab69f9bec4d4b465430a027bd1a9819768278ad9b6fffef8abebeb3731bf5b3ea5a36e16dafbf81c4bd397d6469c038cc912cfbb1359269581f74d6f1d385faf65347d1a668a731215b942b974c64d6d5996feeae7a82312b16ff1119753414ec68fb772bf0dd3c62badc386a97c1cb853e4be3bac9d2fe0287b59dccb7f5733185c7aa673ac0edf6c650fd1a5a332883d51b942bcf3369ae73f958455d5d2cd16b449a364c0');
 
   function searchProperty(input) {
     const filtered = propertyListDefault.filter((property) => {
@@ -132,7 +132,7 @@ const PropertyList = ({
   
   // Définir les paramètres
   let order = 'asc';
-  let limit = 20;
+  let limit = 1000;
   let offset = 1;
   let params = '';
 
@@ -144,6 +144,7 @@ const PropertyList = ({
     try {
       // alert(`properties-values${params}`)
       // alert(selectedObject)
+      console.log( sessionStorage.getItem("token"))
       console.log(`properties-values${params}`)
       console.log('selectedObjectgetPropertiesValues',selectedObject)
       const { data: dataProp } = await axios.get(
@@ -154,7 +155,7 @@ const PropertyList = ({
           },
         }
       );
-      console.log("data", dataProp);
+      console.log("data getPropertiesValues", dataProp);
       const dataPropFilter = dataProp.data.filter(
         (prop) => prop.property_visibility
       );
