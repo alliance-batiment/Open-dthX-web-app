@@ -131,16 +131,21 @@ const PropertyList = ({
   }
   
   // Définir les paramètres
-  let order= 'asc';
-  let limit= 20;
-  let offset= 1;
-  let params='';
-  if(integrityObjectSignature !== undefined && integrityObjectSignature !== '' && integrityObjectSignature !== null){
+  let order = 'asc';
+  let limit = 20;
+  let offset = 1;
+  let params = '';
+
+  if (integrityObjectSignature !== undefined && integrityObjectSignature !== '' && integrityObjectSignature !== null) {
     params = `?order=${order}&limit=${limit}&offset=${offset}&IntegrityObjectSignature=${integrityObjectSignature}`;
   }
 
   const getPropertiesValues = async () => {
     try {
+      // alert(`properties-values${params}`)
+      // alert(selectedObject)
+      console.log(`properties-values${params}`)
+      console.log('selectedObjectgetPropertiesValues',selectedObject)
       const { data: dataProp } = await axios.get(
         `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values${params}`,
         {
