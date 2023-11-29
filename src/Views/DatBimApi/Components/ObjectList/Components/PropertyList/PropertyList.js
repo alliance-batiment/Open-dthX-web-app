@@ -119,7 +119,7 @@ const PropertyList = ({
 
     getIntegrity();
   }, [selectedObject]);
-  
+
 
   const handleSendIntegrity = async () => {
     let integrityProperty;
@@ -129,7 +129,7 @@ const PropertyList = ({
     }
     return integrityProperty;
   }
-  
+
   // Définir les paramètres
   let order = 'asc';
   let limit = 1000;
@@ -144,9 +144,9 @@ const PropertyList = ({
     try {
       // alert(`properties-values${params}`)
       // alert(selectedObject)
-      console.log( sessionStorage.getItem("token"))
+      console.log(sessionStorage.getItem("token"))
       console.log(`properties-values${params}`)
-      console.log('selectedObjectgetPropertiesValues',selectedObject)
+      console.log('selectedObjectgetPropertiesValues', selectedObject)
       const { data: dataProp } = await axios.get(
         `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values${params}`,
         {
