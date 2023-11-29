@@ -189,6 +189,7 @@ const PropertyList = ({
         headers: {
           "content-type": "application/json",
           "X-Auth-Token": sessionStorage.getItem("token"),
+          "Access-Control-Allow-Origin": "*",
         },
         data: updatedProperties,
       });
