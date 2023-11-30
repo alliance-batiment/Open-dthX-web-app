@@ -69,7 +69,7 @@ const Login = ({ handleSubmit }) => {
 
   return (
     <>
-      <h2 className={classes.datBimTitle}>Open dthX API Connexion</h2>
+      <h2 className={classes.datBimTitle}>opendthX API Connexion</h2>
       <Grid item xs={12}>
         <form
           className={classes.root}

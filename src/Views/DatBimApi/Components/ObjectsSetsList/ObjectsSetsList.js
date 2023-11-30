@@ -17,6 +17,8 @@ import SearchBar from "../../../../Components/SearchBar";
 import Pagination from "@material-ui/lab/Pagination";
 import TreeClass from "./TreeClass";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import usePagination from "../../../../Utils/usePagination";
+import PaginationElem from "../../../../Components/PaginationElem";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -333,6 +335,14 @@ const ObjectsSetsList = ({
       ? objectsSetsListWithEIDS
       : objectsSetsList;
 
+
+  const {
+    count,
+    page,
+    currentData,
+    handleChangePage
+  } = usePagination(usedList, 10);
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -395,7 +405,7 @@ const ObjectsSetsList = ({
                     mot clé.
                   </Grid>
                 ) : (
-                  usedList.map((object, index) => (
+                  currentData().map((object, index) => (
                     <Grid item sm={4}>
                       <Card
                         key={index}
@@ -437,14 +447,16 @@ const ObjectsSetsList = ({
                     </Grid>
                   ))
                 )}
-
-                {objectsSetsList?.meta && (
+                <Grid item xs={12}>
+                  <PaginationElem count={count} page={page} onChange={handleChangePage} />
+                </Grid>
+                {/* {objectsSetsList?.meta && (
                   <Pagination
                     count={objectsSetsList.meta.current_items}
                     onChange={(e, value) => getObjectsSetsList()}
                     variant="outlined"
                   />
-                )}
+                )} */}
               </Grid>
             )}
           </Grid>

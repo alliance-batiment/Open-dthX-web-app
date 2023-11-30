@@ -7,6 +7,11 @@ import {
   Typography,
   Breadcrumbs,
   Divider,
+  Tabs,
+  Tab,
+  Box,
+  AppBar,
+  Paper
 } from "@material-ui/core";
 import SelectionComponent from "./SelectionComponent";
 
@@ -18,7 +23,11 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import SearchBar from "../../../../Components/SearchBar";
 
 import PropertyList from "./Components/PropertyList/PropertyList";
-import SpeckleConnector from "./Components/SpeckleConnector";
+import Connectors from "./Components/Connectors";
+import RevitConnector from "../ObjectList/Components/Connectors/Components/RevitConnector/RevitConnector";
+import IfcConnector from "../ObjectList/Components/Connectors/Components/IfcConnector/IfcConnector";
+import SpeckleConnector from "../ObjectList/Components/Connectors/Components/SpeckleConnector";
+import RevitSpeckleConnector from "../ObjectList/Components/Connectors/Components/RevitSpeckleConnector/RevitSpeckleConnector";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -57,6 +66,7 @@ const ObjectList = ({
   breadcrumbMap,
   handleShowMarketplace,
   setActiveStep,
+  selectedPortal
 }) => {
   const classes = useStyles();
 
@@ -68,6 +78,12 @@ const ObjectList = ({
   const [objectListing, setObjectListing] = useState({});
   const [selectedObjectName, setSelectedObjectName] = useState("");
   const [properties, setProperties] = useState([]);
+  const [value, setValue] = useState(0);
+  const [isLastLevel, setIsLastLevel] = useState(false);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   // const classes = await axios.get(
   //   `${process.env.REACT_APP_API_DATBIM}/classes/mapping/${typeProperties}`,
@@ -241,6 +257,13 @@ const ObjectList = ({
       Array.isArray(nodes.children) && nodes.children.length > 0
         ? nodes.children.reduce(childRenderTree, [[], count])
         : [null, count + 1];
+      
+    // Condition pour vérifier si l'élément a des enfants ou est le dernier niveau
+    let lastLevel;
+    if(nodes.children){
+      lastLevel = !Array.isArray(nodes?.children) || nodes?.children?.length === 0;
+    }
+
     return [
       <TreeItem
         key={nodes.id}
@@ -249,6 +272,7 @@ const ObjectList = ({
         onClick={() => {
           setSelectedObject(nodes.id);
           setSelectedObjectName(nodes.name);
+          setIsLastLevel(lastLevel);
         }}
       >
         {children}
@@ -392,28 +416,111 @@ const ObjectList = ({
           )}
         </Grid>
         <Grid item sm={7}>
-          <PropertyList
-            classes={classes}
-            projectId={projectId}
-            objSelected={objSelected}
-            selectedObject={selectedObject}
-            viewer={viewer}
-            modelID={modelID}
-            eids={eids}
-            setEids={setEids}
-            addElementsNewProperties={addElementsNewProperties}
-            handleShowMarketplace={handleShowMarketplace}
-            properties={properties}
-            setProperties = {setProperties}
+          <Paper square style={{ textTransform: "none" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="secondary"
+              textColor="inherit"
+              variant="fullWidth"
+              aria-label="full width tabs example"
+            >
+              <Tab label="Propriétés" style={{ textTransform: "none" }} {...a11yProps(0)} />
+              {/* <Tab label="Connecteurs" style={{textTransform: "none"}} {...a11yProps(1)} /> */}
+            </Tabs>
+          </Paper>
+          <TabPanel value={value} index={0}>
+            <PropertyList
+              classes={classes}
+              projectId={projectId}
+              objSelected={objSelected}
+              selectedObject={selectedObject}
+              viewer={viewer}
+              modelID={modelID}
+              eids={eids}
+              setEids={setEids}
+              addElementsNewProperties={addElementsNewProperties}
+              handleShowMarketplace={handleShowMarketplace}
+              properties={properties}
+              setProperties={setProperties}
+              selectorsRequest={selectorsRequest}
+            />
+          </TabPanel>
+          {typeof window.CefSharp !== "undefined" ? (
+            <>
+              {(properties?.length > 0 && isLastLevel) &&
+                <>
+                  <RevitConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                    selectedPortal={selectedPortal}
+                  />
+                  <RevitSpeckleConnector />
+                </>
+              }
+            </>
+          ) : (
+            <>
+              {(properties?.length > 0 && isLastLevel) &&
+                <>
+                  <IfcConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                    selectedObjectName={selectedObjectName}
+                    selectedPortal={selectedPortal}
+                  />
+                  <SpeckleConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                    selectedPortal={selectedPortal}
+                  />
+                </>
+              }
+            </>
+          )}
+          {/* <TabPanel value={value} index={1}>
+          <Connectors 
+              selectedObject={selectedObject}
+              properties={properties}
+              setProperties = {setProperties}
           />
+        </TabPanel> */}
         </Grid>
-        <SpeckleConnector
-            properties={properties}
-            setProperties = {setProperties}
-      />
+
       </Grid>
     </>
   );
 };
 
 export default ObjectList;
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}

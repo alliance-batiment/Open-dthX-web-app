@@ -54,10 +54,10 @@ const SelectionComponent = ({
                     <TableBody>
                       {selectors?.map((selector, selectorIndex) => (
                         <TableRow key={selector.id}>
-                          <TableCell width="40%" component="th" scope="row">
+                          <TableCell width="30%" component="th" scope="row">
                             {selector.name}
                           </TableCell>
-                          <TableCell width="40%" align="right">
+                          <TableCell width="60%" align="right">
                             {DefineTypeComponent({
                               type: selector.type,
                               selector,

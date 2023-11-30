@@ -1,0 +1,10 @@
+[[redirects]]
+  from = “/*”
+  to = “https://rest-api-rw.datbim.com/v3"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+[[headers]]
+  from = “/*”
+  [headers.values]
+    Access-Control-Allow-Origin = "*"

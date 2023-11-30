@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Select, MenuItem, Slider, makeStyles } from "@material-ui/core";
+import { Input, Grid, Select, MenuItem, Slider, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   datBIMColor: {
@@ -60,6 +60,39 @@ const DefineTypeComponent = ({
     getObjectsOfAdvancedSearch(newSelectorRequest);
     //console.log("selectorsIndex ==>", selectorIndex);
   };
+
+  const handleChangeIntervalValue = (event) => {
+    console.log('event.target.value', event.target)
+    console.log('event.target.value', event.target.value)
+    let value = event.target.value;
+    setTimeout((value) => {
+      const newSelectorRequest = [...selectorsRequest];
+      let checkExist = false;
+
+      selectorsRequest.forEach((select, index) => {
+        if (select.id === selector.id) {
+          checkExist = true;
+          newSelectorRequest.splice(index, 1, {
+            id: select.id,
+            type: select.type,
+            value: value,
+          });
+        }
+      });
+
+      if (!checkExist) {
+        newSelectorRequest.push({
+          id: selector.id,
+          type: selector.type,
+          value: value,
+        });
+      }
+      setSelectorsRequest(newSelectorRequest);
+      //console.log("selectorsRequest", newSelectorRequest);
+      getObjectsOfAdvancedSearch(newSelectorRequest);
+    }, 2000, value)
+  };
+
 
   const updateSelectedRangedValues = (event, selectorIndex) => {
     //console.log("selectorIndex ==>", selectorIndex);
@@ -132,6 +165,9 @@ const DefineTypeComponent = ({
     // console.log("selectorsIndex ==>", selectorIndex);
   };
 
+
+
+
   const marks = [
     {
       label: `${selector.value_min}`,
@@ -200,18 +236,40 @@ const DefineTypeComponent = ({
     //   break;
     case "interval":
       component = (
-        <Slider
-          className={`${classes.slider} ${classes.datBIMColor}`}
-          defaultValue={selector.value_min}
-          getAriaValueText={valuetext}
-          aria-labelledby="discrete-slider"
-          valueLabelDisplay="auto"
-          step={(selector.value_max - selector.value_min) / 100}
-          marks={marks}
-          min={selector.value_min}
-          max={selector.value_max}
-          onChangeCommitted={handleChangeIntervalCommitted}
-        />
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <Slider
+              className={`${classes.slider} ${classes.datBIMColor}`}
+              defaultValue={selector.value_min}
+              getAriaValueText={valuetext}
+              aria-labelledby="discrete-slider"
+              valueLabelDisplay="auto"
+              step={(selector.value_max - selector.value_min) / 100}
+              marks={marks}
+              min={selector.value_min}
+              max={selector.value_max}
+              onChangeCommitted={handleChangeIntervalCommitted}
+              value={selectorsRequest?.find(item => item.id === selector.id)?.value}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Input
+              className={`${classes.slider}`}
+              defaultValue={selector.value_min}
+              //value={selector.text_value}
+              value={selectorsRequest?.find(item => item.id === selector.id)?.value}
+              margin="dense"
+              onChange={handleChangeIntervalValue}
+              inputProps={{
+                step: (selector.value_max - selector.value_min) / 100,
+                min: selector.value_min,
+                max: selector.value_max,
+                type: 'text',
+                'aria-labelledby': 'input-slider',
+              }}
+            />
+          </Grid>
+        </Grid>
       );
       break;
 

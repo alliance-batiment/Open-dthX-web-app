@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   Grid,
   Button,
@@ -58,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: "10px",
     backgroundColor: "#E6464D",
+    margin: "1em",
     color: "white",
     "&:hover": {
       backgroundColor: "#E6464D",
@@ -82,7 +82,9 @@ const PropertyList = ({
   addElementsNewProperties,
   handleShowMarketplace,
   properties,
-  setProperties
+  setProperties,
+  selectorsRequest,
+  selectedPortal
 }) => {
   const [searchInput, setSearchInput] = useState("");
   const [propertyListDefault, setPropertyListDefault] = useState([]);
@@ -90,6 +92,7 @@ const PropertyList = ({
   const [status, setStatus] = useState("");
   const history = useHistory();
   const classes = useStyles();
+  const [integrityObjectSignature, setIntegrityObjectSignature] = useState('316f6e4adbbe39a7efbc8b3df5e998a539bfbf8e86dd31eaeb2af28515b89d6db837c5f753c540b5838a7b25c511139fc4cceff611b7a36edea18af7cf8157aff1b0cbe92bdf5665ca5fce4035d6ab8e647ab69f9bec4d4b465430a027bd1a9819768278ad9b6fffef8abebeb3731bf5b3ea5a36e16dafbf81c4bd397d6469c038cc912cfbb1359269581f74d6f1d385faf65347d1a668a731215b942b974c64d6d5996feeae7a82312b16ff1119753414ec68fb772bf0dd3c62badc386a97c1cb853e4be3bac9d2fe0287b59dccb7f5733185c7aa673ac0edf6c650fd1a5a332883d51b942bcf3369ae73f958455d5d2cd16b449a364c0');
 
   function searchProperty(input) {
     const filtered = propertyListDefault.filter((property) => {
@@ -108,17 +111,51 @@ const PropertyList = ({
     getData();
   }, [selectedObject]);
 
+  useEffect(() => {
+    const getIntegrity = async () => {
+      const integrityProperty = await handleSendIntegrity();
+      setIntegrityObjectSignature(integrityProperty);
+    }
+
+    getIntegrity();
+  }, [selectedObject]);
+
+
+  const handleSendIntegrity = async () => {
+    let integrityProperty;
+    if (typeof window.CefSharp !== "undefined") {
+      await window.CefSharp.BindObjectAsync("connector");
+      integrityProperty = await window.connector.sendObjectIntegrity();
+    }
+    return integrityProperty;
+  }
+
+  // Définir les paramètres
+  let order = 'asc';
+  let limit = 1000;
+  let offset = 1;
+  let params = '';
+
+  if (integrityObjectSignature !== undefined && integrityObjectSignature !== '' && integrityObjectSignature !== null) {
+    params = `?order=${order}&limit=${limit}&offset=${offset}&IntegrityObjectSignature=${integrityObjectSignature}`;
+  }
+
   const getPropertiesValues = async () => {
     try {
+      // alert(`properties-values${params}`)
+      // alert(selectedObject)
+      console.log(sessionStorage.getItem("token"))
+      console.log(`properties-values${params}`)
+      console.log('selectedObjectgetPropertiesValues', selectedObject)
       const { data: dataProp } = await axios.get(
-        `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values`,
+        `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/properties-values${params}`,
         {
           headers: {
             "X-Auth-Token": sessionStorage.getItem("token"),
           },
         }
       );
-      console.log("data", dataProp);
+      console.log("data getPropertiesValues", dataProp);
       const dataPropFilter = dataProp.data.filter(
         (prop) => prop.property_visibility
       );
@@ -160,82 +197,6 @@ const PropertyList = ({
       console.log("error", err);
     }
   };
-
-  const postGeometry = async (properties, objSelected) => {
-    try {
-      console.log('properties', properties);
-      console.log('objSelected', objSelected);
-
-      const updatedProperties = [];
-
-      for(let property of properties) {
-        updatedProperties.push(updatePorperty(property));
-      }
-
-      // const fileName = `object_${objSelected}_properties`;
-      // const json = JSON.stringify(updatedProperties);
-      // const blob = new Blob([json], { type: 'application/json' });
-      // const href = await URL.createObjectURL(blob);
-      // const link = document.createElement('a');
-      // link.href = href;
-      // link.download = fileName + ".json";
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
-
-      const objectGeometry = await axios({
-        method: "post",
-        url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/get-model-file/glb`,
-        headers: {
-          "content-type": "application/json",
-          "X-Auth-Token": sessionStorage.getItem("token"),
-          "Access-Control-Allow-Origin": "*",
-        },
-        data: updatedProperties,
-      });
-
-      // const objectGeometry = await axios({
-      //   method: "post",
-      //   url: "http://localhost:5000/opendthx/postGeometry",
-      //   headers: {
-      //     "content-type": "application/json",
-      //     "X-Auth-Token": sessionStorage.getItem("token"),
-      //   },
-      //   data: {
-      //     url:  `${process.env.REACT_APP_API_DATBIM}`,
-      //     token: sessionStorage.getItem("token"),
-      //     objectId: selectedObject,
-      //     properties: updatedProperties
-      //   },
-      // });
-
-      console.log("objectGeometry", objectGeometry);
-
-    } catch (err) {
-      getError(err);
-    }
-  };
-
-
-  const getError = (err) => {
-    if (err.response?.status === 400) {
-      setStatus("the data sent is not correct")
-    }
-    if (err.response?.status === 401) {
-      setStatus("unauthorized, the token must be in the header")
-    }
-    if (err.response?.status === 403) {
-      setStatus("access denied")
-    }
-    if (err.response?.status === 404) {
-      setStatus("the object id doesn't exist")
-    }
-    if (err.response?.status === 410) {
-      setStatus("resource unavailable")
-    }
-  }
-
-
 
   const handleCheckedProperties = (e) => {
     // console.log(`Checkbox id:`, e.target.id);
@@ -296,7 +257,6 @@ const PropertyList = ({
 
     // let keyValue = key ? key : 'text_value';
     let inputValue = e.target.value;
-
     let property = properties[index];
     const newPropertiesArr = [...properties];
     switch (property.data_type_name) {
@@ -314,7 +274,6 @@ const PropertyList = ({
 
     setProperties(newPropertiesArr);
   };
-
 
   const updatePorperty = (property) => {
     switch (property.data_type_name) {
@@ -343,8 +302,6 @@ const PropertyList = ({
     }
   }
 
-
-
   const addElementsDatBimProperties = async (properties) => {
     const filteredProperties = properties.filter(
       (property) => property.checked
@@ -357,17 +314,19 @@ const PropertyList = ({
 
     console.log('updateProperties', updateProperties)
 
+    const defaultIdPortal = 78;
+    const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
+
     const signingProperties = await axios({
       method: "post",
-      url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
+      // url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
+      url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing?idPortal=${idPortalToUse}`,
       headers: {
         "content-type": "application/json",
         "X-Auth-Token": sessionStorage.getItem("token"),
       },
       data: updateProperties,
     });
-
-    console.log('data from datbim', signingProperties)
 
     // addElementsNewProperties({
     //   viewer,
@@ -378,10 +337,6 @@ const PropertyList = ({
     // handleShowMarketplace("home");
   };
 
-
-
-
-  console.log("properties", properties);
   return (
     <TableContainer component={Paper}>
       {/* <SearchBar
@@ -411,76 +366,71 @@ const PropertyList = ({
             )}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {properties?.map((property, propertyIndex) => (
-            <TableRow
-              key={propertyIndex}
-              className={`${classes.root} ${classes.datBimList}`}
-            >
-              <TableCell width="35%" component="th" scope="row">
-                {property.property_name}
-              </TableCell>
-              <TableCell width="10%" component="th" scope="row">
-                {property.property_definition && (
-                  <Tooltip
-                    title={`${property.property_definition}`}
-                    placement="top-start"
-                  >
-                    <IconButton>
-                      <InfoIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </TableCell>
-              <TableCell width="35%" align="right">
-                {DefineTypeComponent(
-                  property.data_type_name,
-                  property,
-                  propertyIndex,
-                  configureProperty
-                )}
-              </TableCell>
-              <TableCell width="10%" align="center">
-                {property.unit}
-              </TableCell>
-              <TableCell width="10%" align="center">
-                <Checkbox
-                  defaultChecked
-                  checked={properties[propertyIndex].checked}
-                  onChange={handleCheckedProperties}
-                  id={propertyIndex}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        {(selectedObject && selectedObject !== "") &&
+          <TableBody>
+            {properties?.map((property, propertyIndex) => (
+              <TableRow
+                key={propertyIndex}
+                className={`${classes.root} ${classes.datBimList}`}
+              >
+                <TableCell width="35%" component="th" scope="row">
+                  {property.property_name}
+                </TableCell>
+                <TableCell width="10%" component="th" scope="row">
+                  {property.property_definition && (
+                    <Tooltip
+                      title={`${property.property_definition}`}
+                      placement="top-start"
+                    >
+                      <IconButton>
+                        <InfoIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </TableCell>
+                <TableCell width="35%" align="right">
+                  {DefineTypeComponent(
+                    property.data_type_name,
+                    property,
+                    propertyIndex,
+                    configureProperty,
+                    selectorsRequest
+                  )}
+                </TableCell>
+                <TableCell width="10%" align="center">
+                  {property.unit}
+                </TableCell>
+                <TableCell width="10%" align="center">
+                  <Checkbox
+                    defaultChecked
+                    checked={properties[propertyIndex].checked}
+                    onChange={handleCheckedProperties}
+                    id={propertyIndex}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        }
       </Table>
-      <Grid row align="left">
-        <Button
-          variant="contained"
-          onClick={() => {
-            postGeometry(properties, selectedObject);
-          }}
-          color="primary"
-          className={classes.button}
-        >
-          Géométrie
-        </Button>
-      </Grid>
-      <Grid row align="right">
-        <Button
-          variant="contained"
-          onClick={() => {
-            // if(eids && eids.length > 0) {
-            //    addElementsDatBimProperties(properties, objSelected);
-            // }
-            addElementsDatBimProperties(properties);
-          }}
-          color="primary"
-          className={classes.button}
-        >
-          Ajouter
-        </Button>
+      <Grid container>
+        {/* <Grid item xs={6} align="right">
+          {(selectedObject && selectedObject !== "") && 
+            <Button
+              variant="contained"
+              onClick={() => {
+                // if(eids && eids.length > 0) {
+                //    addElementsDatBimProperties(properties, objSelected);
+                // }
+                addElementsDatBimProperties(properties);
+              }}
+              color="primary"
+              className={classes.button}
+            >
+              Ajouter
+            </Button>
+          }
+        </Grid> */}
       </Grid>
       {(status !== "") &&
         <Grid item xs={12}>
