@@ -75,6 +75,7 @@ const ObjectList = ({
   const [selectorsRequest, setSelectorsRequest] = useState([]);
   const [selectorsLoader, setSelectorsLoader] = useState(false);
   const [objectsLoader, setObjectsLoader] = useState(false);
+  const [objectGeometry, setObjectGeometry] = useState(false);
   const [objectListing, setObjectListing] = useState({});
   const [selectedObjectName, setSelectedObjectName] = useState("");
   const [properties, setProperties] = useState([]);
@@ -112,7 +113,8 @@ const ObjectList = ({
           },
         }
       );
-      // console.log("selectorsOfObjectSet.data", selectorsOfObjectSet.data);
+
+      console.log("selectorsOfObjectSet.data", selectorsOfObjectSet.data);
       setSelectors(selectorsOfObjectSet.data);
       setSelectorsLoader(false);
     } catch (error) {
@@ -257,10 +259,10 @@ const ObjectList = ({
       Array.isArray(nodes.children) && nodes.children.length > 0
         ? nodes.children.reduce(childRenderTree, [[], count])
         : [null, count + 1];
-      
+
     // Condition pour vérifier si l'élément a des enfants ou est le dernier niveau
     let lastLevel;
-    if(nodes.children){
+    if (nodes.children) {
       lastLevel = !Array.isArray(nodes?.children) || nodes?.children?.length === 0;
     }
 
@@ -270,6 +272,7 @@ const ObjectList = ({
         nodeId={nodes.id}
         label={nodes.name}
         onClick={() => {
+          setObjectGeometry(nodes.geometry);
           setSelectedObject(nodes.id);
           setSelectedObjectName(nodes.name);
           setIsLastLevel(lastLevel);
@@ -462,7 +465,7 @@ const ObjectList = ({
             </>
           ) : (
             <>
-              {(properties?.length > 0 && isLastLevel) &&
+              {(properties?.length > 0 && isLastLevel && objectGeometry) &&
                 <>
                   <IfcConnector
                     selectedObject={selectedObject}
