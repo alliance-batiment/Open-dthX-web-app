@@ -53,6 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ObjectList = ({
+  bimData,
+  setBimData,
   projectId,
   objSelected,
   addElementsNewProperties,
@@ -265,6 +267,9 @@ const ObjectList = ({
     if (nodes.children) {
       lastLevel = !Array.isArray(nodes?.children) || nodes?.children?.length === 0;
     }
+    if (nodes.geometry) {
+      console.log('nodes geom', `${nodes.name}`)
+    }
 
     return [
       <TreeItem
@@ -438,6 +443,8 @@ const ObjectList = ({
               projectId={projectId}
               objSelected={objSelected}
               selectedObject={selectedObject}
+              bimData={bimData}
+              setBimData={setBimData}
               viewer={viewer}
               modelID={modelID}
               eids={eids}
@@ -451,7 +458,7 @@ const ObjectList = ({
           </TabPanel>
           {typeof window.CefSharp !== "undefined" ? (
             <>
-              {(properties?.length > 0 && isLastLevel) &&
+              {(properties?.length > 0) &&
                 <>
                   <RevitConnector
                     selectedObject={selectedObject}
@@ -465,7 +472,7 @@ const ObjectList = ({
             </>
           ) : (
             <>
-              {(properties?.length > 0 && isLastLevel && objectGeometry) &&
+              {(properties?.length > 0 && objectGeometry) &&
                 <>
                   <IfcConnector
                     selectedObject={selectedObject}

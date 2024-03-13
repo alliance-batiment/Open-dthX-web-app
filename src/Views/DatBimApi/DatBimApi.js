@@ -155,7 +155,15 @@ const QontoConnector = withStyles({
   },
 })(StepConnector);
 
+const {
+  REACT_APP_LOGO,
+  REACT_APP_COMPANY,
+  REACT_APP_VERSION
+} = process.env;
+
 const DatBimApi = ({
+  bimData,
+  setBimData,
   viewer,
   modelID,
   eids,
@@ -200,8 +208,8 @@ const DatBimApi = ({
         {completed ? (
           <Check className={classes.completed} />
         ) : (
-            <div className={classes.circle} />
-          )}
+          <div className={classes.circle} />
+        )}
       </div>
     );
   }
@@ -300,6 +308,8 @@ const DatBimApi = ({
       case 3:
         return (
           <ObjectList
+            bimData={bimData}
+            setBimData={setBimData}
             selectedObject={selectedObject}
             selectedObjectSet={selectedObjectSet}
             selectedObjectSetName={selectedObjectSetName}
@@ -326,9 +336,14 @@ const DatBimApi = ({
 
   return (
     <div
-      //style={{ backgroundColor: 'white'}}
+    //style={{ backgroundColor: 'white'}}
     >
       <Grid container>
+        <Grid item xs={12} style={{ textAlign: "right" }}>
+          <a style={{ color: "inherit" }} target="_blank">
+            {`${REACT_APP_VERSION}`}
+          </a>
+        </Grid>
         <Grid item xs={6} style={{ textAlign: "left" }}>
           {activeStep > 0 && (
             <KeyboardBackspaceIcon
@@ -349,7 +364,7 @@ const DatBimApi = ({
       </Grid>
       <Stepper
         alternativeLabel
-        style={{backgroundColor: "transparent"}}
+        style={{ backgroundColor: "transparent" }}
         activeStep={activeStep}
         connector={<QontoConnector />}
       >
