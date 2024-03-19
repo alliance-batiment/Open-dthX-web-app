@@ -219,6 +219,7 @@ const IfcConnector = ({
     link.click();
   };
 
+  console.log('selectedObject=>>>>', selectedObject)
   return (
     <>
       <Grid item xs={12}>
