@@ -168,6 +168,9 @@ const ObjectsSetsList = ({
   const getobjectsSetsBySelectedClass = async (classId) => {
     try {
       setObjectsSetsListLoader(true);
+      console.log('selected selectedPortal id', selectedPortal)
+
+      console.log('selected class id', classId)
       const objectsSetsBySelectedClass = await axios.get(
         `${process.env.REACT_APP_API_DATBIM}/portals/${selectedPortal}/object-sets/classes/${classId}`,
         {
