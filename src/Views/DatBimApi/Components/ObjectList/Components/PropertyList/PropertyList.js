@@ -75,6 +75,8 @@ const PropertyList = ({
   setLoader,
   objSelected,
   selectedObject,
+  bimData,
+  setBimData,
   viewer,
   modelID,
   eids,
@@ -302,7 +304,7 @@ const PropertyList = ({
     }
   }
 
-  const addElementsDatBimProperties = async (properties) => {
+  const addElementsDatBimProperties = async (properties, objSelected) => {
     const filteredProperties = properties.filter(
       (property) => property.checked
     );
@@ -313,28 +315,28 @@ const PropertyList = ({
     }
 
     console.log('updateProperties', updateProperties)
-
-    const defaultIdPortal = 78;
-    const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
-
-    const signingProperties = await axios({
+    console.log('objSelected', objSelected)
+    const response = await axios({
       method: "post",
-      // url: `${process.env.REACT_APP_API_DATBIM}/objects/${selectedObject}/signing`,
-      url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing?idPortal=${idPortalToUse}`,
+      url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
       headers: {
         "content-type": "application/json",
         "X-Auth-Token": sessionStorage.getItem("token"),
       },
-      data: updateProperties,
+      data: updateProperties
     });
 
-    // addElementsNewProperties({
-    //   viewer,
-    //   modelID,
-    //   expressIDs: eids,
-    //   properties: updateProperties,
-    // });
-    // handleShowMarketplace("home");
+    console.log('data', response.data)
+
+    await addElementsNewProperties({
+      bimData,
+      setBimData,
+      viewer,
+      modelID,
+      expressIDs: eids,
+      properties: response.data.property ? response.data.property : updateProperties,
+    });
+    handleShowMarketplace("home");
   };
 
   return (
@@ -432,6 +434,20 @@ const PropertyList = ({
           }
         </Grid> */}
       </Grid>
+      {viewer &&
+        <Grid row align="right">
+          <Button
+            variant="contained"
+            onClick={() => {
+              addElementsDatBimProperties(properties, selectedObject);
+            }}
+            color="primary"
+            className={classes.button}
+          >
+            Ajouter
+            </Button>
+        </Grid>
+      }
       {(status !== "") &&
         <Grid item xs={12}>
           <Alert severity={'error'}>{`${status}`}</Alert>
