@@ -209,8 +209,6 @@ const RevitConnector = ({
         updatedProperties.push(integrityPropertyToAdd);
       }
       
-      console.log('updatedProperties', updatedProperties); //with metadata
-      console.log('objSelected',objSelected);
       const defaultIdPortal = 78;
       const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
 
