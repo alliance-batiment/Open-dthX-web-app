@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "webpack": "^5.74.0"
+    "autoprefixer": "^10.4.15",
+    "timers-browserify": "^2.0.12",
+    "webpack": "^5.74.0",
+    "xml2js": "^0.6.2"
   }
 }
+
