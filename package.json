@@ -51,8 +51,8 @@
   },
   "scripts": {
     "start": "env-cmd ./.env.development react-scripts start",
-    "start:federation": "PORT=3002 node ./module-federation/start.js",
-    "start-win:federation": "set PORT=3002 && node ./module-federation/start.js",
+    "start:federation": "PORT=3004 node ./module-federation/start.js",
+    "start-win:federation": "set PORT=3004 && node ./module-federation/start.js",
     "build:federation": "CI=false env-cmd ./.env.production node ./module-federation/build.js",
     "build": "CI=false && react-scripts build",
     "test": "react-scripts test",
