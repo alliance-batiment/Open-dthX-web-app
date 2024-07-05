@@ -41,6 +41,7 @@
     "styled-components": "^5.0.1",
     "three": "^0.135.0",
     "three-css2drender": "^1.0.0",
+    "timers-browserify": "^2.0.12",
     "uninstall": "^0.0.0",
     "use-tensorflow": "^0.3.2",
     "web-ifc-viewer": "^1.0.210"
