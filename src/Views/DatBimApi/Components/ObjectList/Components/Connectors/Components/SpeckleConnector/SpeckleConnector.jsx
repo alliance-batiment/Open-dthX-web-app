@@ -238,7 +238,9 @@ const SpeckleConnector = ({
       const updatedProperties = [];
 
       for (let property of properties) {
-        updatedProperties.push(updatePorperty(property));
+        if(property?.value !== null && property?.text_value !== null){
+          updatedProperties.push(updatePorperty(property));
+        }
       }
 
       const objectGeometry = await axios({
@@ -343,6 +345,7 @@ const SpeckleConnector = ({
 
       setLoading(false);
     } catch (err) {
+      console.log('Error SpeckleConnector', err);
       setOutputCommitUrl("");
       setLoading(false);
       getError(err);

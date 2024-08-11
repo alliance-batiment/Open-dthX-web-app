@@ -143,7 +143,9 @@ const IfcConnector = ({
       const updatedProperties = [];
 
       for (let property of properties) {
-        updatedProperties.push(updatePorperty(property));
+        if(property?.value !== null && property?.text_value !== null){
+          updatedProperties.push(updatePorperty(property));
+        }
       }
       console.log('updatedProperties IfcConnector', updatedProperties);
       
@@ -160,6 +162,8 @@ const IfcConnector = ({
         },
         data: updatedProperties,
       });
+
+      console.log('updatedPropertiesobjectGeometry', updatedProperties); //no metadata
 
       const objectGeometry = await axios({
         method: "post",

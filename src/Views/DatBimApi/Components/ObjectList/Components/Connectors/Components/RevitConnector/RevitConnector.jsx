@@ -178,7 +178,10 @@ const RevitConnector = ({
 
       // for (let property of properties){
       for (let property of contextProperties?.data?.data) {
-        updatedProperties.push(updatePorperty(property));
+        console.log('property=>contextProperties', property)
+        if(property?.value !== null && property?.text_value !== null && property?.property_visibility){
+          updatedProperties.push(updatePorperty(property));
+        }
       }
 
       if(integrityProperty !== undefined && integrityProperty !== '' && integrityProperty !== null){
@@ -201,7 +204,7 @@ const RevitConnector = ({
           property_visibility: true,
           status: 1,
           text_value: integrityProperty,
-          value:integrityProperty,
+          value: integrityProperty,
           unit: null,
           updated_at: ""
         };
@@ -211,7 +214,7 @@ const RevitConnector = ({
       
       const defaultIdPortal = 78;
       const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
-
+      console.log('updatedProperties signing', updatedProperties);
       const signingProperties = await axios({
         method: "post",
         //url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/signing`,
@@ -232,8 +235,8 @@ const RevitConnector = ({
           "X-Auth-Token": sessionStorage.getItem("token"),
           "Accept": "application/octet-stream",
         },
-        // data: updatedProperties,
-        data: [],
+        data: []
+        // data: updatedProperties
       });
       console.log('objectGeometry.data',objectGeometry)
 
@@ -334,6 +337,7 @@ const RevitConnector = ({
       await window.CefSharp.PostMessage(JSON.stringify({ action: "creatGeometry", vertices: newVertices, faces: newFaces, parameters: propertiesList }));
 
     } catch (err) {
+      console.log('Error postGeometry ', err);
       setLoading(false);
       getError(err);
     }
