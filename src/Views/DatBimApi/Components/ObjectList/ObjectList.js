@@ -466,12 +466,12 @@ const ObjectList = ({
                     setProperties={setProperties}
                     selectedPortal={selectedPortal}
                   />
-                  <SpeckleConnector
+                  {/* <SpeckleConnector
                     selectedObject={selectedObject}
                     properties={properties}
                     setProperties={setProperties}
                     selectedPortal={selectedPortal}
-                  />
+                  /> */}
                 </>
               }
             </>
