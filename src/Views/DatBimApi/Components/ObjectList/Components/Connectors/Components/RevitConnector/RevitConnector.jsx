@@ -172,7 +172,8 @@ const RevitConnector = ({
         
       });
 
-      console.log('contextProperties', contextProperties);
+      console.log('contextProperties=>', contextProperties);
+      console.log('contextProperties=>', properties);
 
       const updatedProperties = [];
 
@@ -309,28 +310,55 @@ const RevitConnector = ({
       // Liste qui stockera toutes les valeurs "ifc_property_name"
       const propertiesList = [];
 
-      console.log('properties API datBIM : ', signingProperties?.data?.property)
+      // console.log('properties API datBIM propreties: ', properties)
+      // console.log('properties API datBIM updatedProperties: ', updatedProperties)
+      // console.log('properties API datBIM signingProperties?.data?.property: ', signingProperties?.data?.property)
+
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
       for (let i = 0; i < signingProperties?.data?.property.length; i++) {
         const prop = signingProperties?.data?.property[i];
+        const propFromProperties = properties.find(p => p?.datbim_code === prop?.datbim_code);
         const propInUpdatedProperties = updatedProperties.find(p => p?.datbim_code === prop?.datbim_code);
         if(prop.property_visibility){
-          const propertyObject = {
-            property_name: prop?.property_name,
-            num_value: parseFloat(prop?.num_value),
-            text_value: prop?.text_value,
-            unit: prop?.unit,
-            typeId: prop?.data_type_id,
-            ifc_type: prop?.ifc_type,
-            revitPropertyType: propInUpdatedProperties?.metadata?.revitPropertyType ? propInUpdatedProperties?.metadata?.revitPropertyType : null
-          };
+          const minIntervalProp = prop?.min_interval || 1; // min_interval de signingProperties (unité cible)
+          const minIntervalPropFromProperties = propFromProperties?.min_interval || 1; // min_interval de properties (unité source)
+
+          const facteurUnite = minIntervalPropFromProperties !== 0 ? minIntervalProp / minIntervalPropFromProperties : 1;
+          let propertyObject; 
+
+          if(prop?.property_name === "IntegrityObjectSignature"){
+            propertyObject = {
+              property_name: prop?.property_name,
+              num_value: parseFloat(prop?.num_value),
+              text_value: prop?.text_value,
+              unit: prop?.unit,
+              typeId: prop?.data_type_id,
+              ifc_type: prop?.ifc_type,
+              revitPropertyType: propInUpdatedProperties?.metadata?.revitPropertyType ? propInUpdatedProperties?.metadata?.revitPropertyType : null
+            };
+          } else {
+            propertyObject = {
+              property_name: prop?.property_name,
+              // num_value: parseFloat(prop?.num_value),
+              num_value: propFromProperties ? parseFloat(propFromProperties?.num_value) * facteurUnite : null,
+  
+              // text_value: prop?.text_value,
+              text_value: propFromProperties ? propFromProperties?.text_value : null,
+  
+              unit: prop?.unit,
+              typeId: prop?.data_type_id,
+              ifc_type: prop?.ifc_type,
+              revitPropertyType: propInUpdatedProperties?.metadata?.revitPropertyType ? propInUpdatedProperties?.metadata?.revitPropertyType : null
+            };
+          }
+          
           propertiesList.push(propertyObject);
         }
       }
 
       // const newVertices = [];
       // const newFaces = [];
-      console.log(propertiesList);
+      console.log('propertiesList=>', propertiesList);
       //console.log('vertices exported ', newVertices);
       await window.CefSharp.BindObjectAsync("connector");
       const fileNameExported = await window.connector.creatGeometry();
