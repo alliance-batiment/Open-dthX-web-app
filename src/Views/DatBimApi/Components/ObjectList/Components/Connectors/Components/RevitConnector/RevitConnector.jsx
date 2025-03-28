@@ -135,9 +135,49 @@ const RevitConnector = ({
 
       const integrityProperty = await handleSendIntegrity();
       //alert(integrityProperty);
+
+      const revitUnits = await handleGetContext();
+      console.log("context==>",revitUnits);
+
+      const context = {
+        "propertyContext": {
+          "mappings": {
+            "propertyType": "revitPropertyType"
+          },
+          "units": {
+            "propertyType": revitUnits,
+            "propertyName": {}
+          }
+        }
+      }
+
+      const creatContext = await axios({
+        method: "post",
+        url: `${process.env.REACT_APP_API_DATBIM}/contexts`,
+        headers: {
+          "content-type": "application/json",
+          "X-Auth-Token": sessionStorage.getItem("token"),
+        },
+        data: context
+      });
+      console.log('contextKey', creatContext.data);
+
+      const contextProperties = await axios({
+        method: "get",
+        url: `${process.env.REACT_APP_API_DATBIM}/objects/${objSelected}/properties-values?contextKey=${creatContext?.data?.contextKey}`,
+        headers: {
+          "content-type": "application/json",
+          "X-Auth-Token": sessionStorage.getItem("token"),
+        },
+        
+      });
+
+      console.log('contextProperties', contextProperties);
+
       const updatedProperties = [];
 
-      for (let property of properties) {
+      // for (let property of properties){
+      for (let property of contextProperties?.data?.data) {
         updatedProperties.push(updatePorperty(property));
       }
 
@@ -169,8 +209,6 @@ const RevitConnector = ({
         updatedProperties.push(integrityPropertyToAdd);
       }
       
-      console.log('updatedProperties', updatedProperties);
-      console.log('objSelected',objSelected);
       const defaultIdPortal = 78;
       const idPortalToUse = (selectedPortal !== undefined && selectedPortal !== null) ? selectedPortal : defaultIdPortal;
 
@@ -184,6 +222,7 @@ const RevitConnector = ({
         },
         data: updatedProperties,
       });
+      console.log('signingProperties', signingProperties); //no metadata
 
       const objectGeometry = await axios({
         method: "post",
@@ -193,10 +232,11 @@ const RevitConnector = ({
           "X-Auth-Token": sessionStorage.getItem("token"),
           "Accept": "application/octet-stream",
         },
-        data: updatedProperties,
+        // data: updatedProperties,
+        data: [],
       });
+      console.log('objectGeometry.data',objectGeometry)
 
-      console.log("objectGeometry", objectGeometry);
       console.log("type ", typeof objectGeometry.data);
       console.log("instance ", objectGeometry.data instanceof ArrayBuffer);
 
@@ -269,21 +309,17 @@ const RevitConnector = ({
       console.log('properties API datBIM : ', signingProperties?.data?.property)
       // Boucle sur le tableau pour extraire chaque valeur "ifc_property_name"
       for (let i = 0; i < signingProperties?.data?.property.length; i++) {
-        const element = signingProperties?.data?.property[i];
-        if(element.property_visibility){
-          const property_name = element.property_name;
-          const num_value = element.num_value;
-          const text_value = element.text_value;
-          const unit = element.unit;
-          const typeId = element.data_type_id;
-          const ifc_type = element.ifc_type;
+        const prop = signingProperties?.data?.property[i];
+        const propInUpdatedProperties = updatedProperties.find(p => p?.datbim_code === prop?.datbim_code);
+        if(prop.property_visibility){
           const propertyObject = {
-            property_name: property_name,
-            num_value: num_value,
-            text_value: text_value,
-            unit: unit,
-            typeId: typeId,
-            ifc_type: ifc_type
+            property_name: prop?.property_name,
+            num_value: parseFloat(prop?.num_value),
+            text_value: prop?.text_value,
+            unit: prop?.unit,
+            typeId: prop?.data_type_id,
+            ifc_type: prop?.ifc_type,
+            revitPropertyType: propInUpdatedProperties?.metadata?.revitPropertyType ? propInUpdatedProperties?.metadata?.revitPropertyType : null
           };
           propertiesList.push(propertyObject);
         }
@@ -345,6 +381,15 @@ const RevitConnector = ({
     return integrityProperty;
   }
 
+  const handleGetContext = async () => {
+    let context;
+    if (typeof window.CefSharp !== "undefined") {
+      await window.CefSharp.BindObjectAsync("connector");
+      context = await window.connector.getRevitContext();
+    }
+    return context;
+  }
+  
   return (
     <>
       <Grid item xs={12}>

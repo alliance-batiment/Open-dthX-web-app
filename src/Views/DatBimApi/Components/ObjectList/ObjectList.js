@@ -458,7 +458,7 @@ const ObjectList = ({
           </TabPanel>
           {typeof window.CefSharp !== "undefined" ? (
             <>
-              {(properties?.length > 0) &&
+              {(properties?.length > 0 && objectGeometry) &&
                 <>
                   <RevitConnector
                     selectedObject={selectedObject}
@@ -466,7 +466,12 @@ const ObjectList = ({
                     setProperties={setProperties}
                     selectedPortal={selectedPortal}
                   />
-                  <RevitSpeckleConnector />
+                  <SpeckleConnector
+                    selectedObject={selectedObject}
+                    properties={properties}
+                    setProperties={setProperties}
+                    selectedPortal={selectedPortal}
+                  />
                 </>
               }
             </>
